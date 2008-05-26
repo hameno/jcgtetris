@@ -38,7 +38,7 @@ namespace Tetris
             this.Name = "Main";
             this.Text = "JCGTetris";
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.Main_Paint);
-            this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Main_KeyPress);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Main_KeyDown);
             this.ResumeLayout(false);
 
         }
