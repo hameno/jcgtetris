@@ -97,6 +97,8 @@ namespace Tetris
             currentObject.Clear();
             
             //neues zufälliges Objekt generieren
+            startP.X = (this.ClientSize.Width / 2) - (blockS.Width / 2);
+            startP.Y = blockS.Height;
             block.ChangeType(TetronType.T);
             for (int i1 = 0; i1 < 4; i1++)
             {
@@ -112,29 +114,42 @@ namespace Tetris
 
         private void RotateObject()
         {
+            startP.X = currentObject[0].Position().X;
+            startP.Y = currentObject[0].Position().Y;
+
             block.Rotate();
 
-
-          /*  int deltaX;
-            int deltaY;
             bool rotationCollision = false;
-
-            deltaX = 1;
-            deltaY = 1;
-            if ((BorderCollision(deltaX, deltaY, goCurrentObject) == true) ||
-                (GroundCollision(deltaX, deltaY, goCurrentObject) == true))
+            for (int i1 = 0; i1 < 4; i1++)
             {
-                rotationCollision = true;
+                MyGraphicObject tmpGo = new MyRectangle(block.Pen, block.Brush, new Rectangle(
+                        startP.X + block.Points[block.ObjectRotation, i1, 0] * blockS.Width,
+                        startP.Y + block.Points[block.ObjectRotation, i1, 1] * blockS.Height,
+                        blockS.Width, blockS.Height));
+
+                if ((BorderCollision(0, 0, tmpGo) == true) ||
+                    (GroundCollision(0, 0, tmpGo) == true))
+                {
+                    rotationCollision = true;
+                }
             }
 
-            currentObject[1].Move(deltaX * blockS.Width, deltaY * blockS.Height);
-            deltaX = 1;
-            deltaY = -1;
-            currentObject[2].Move(deltaX * blockS.Width, deltaY * blockS.Height);
-            deltaX = -1;
-            deltaY = 1;
-            currentObject[3].Move(deltaX * blockS.Width, deltaY * blockS.Height);
-            this.Invalidate(); */
+            if (rotationCollision == true)
+            {
+                block.RotateBack();
+            }
+            else
+            {
+                currentObject.Clear();
+                for (int i1 = 0; i1 < 4; i1++)
+                {
+                    currentObject.Add(new MyRectangle(block.Pen, block.Brush, new Rectangle(
+                        startP.X + block.Points[block.ObjectRotation, i1, 0] * blockS.Width,
+                        startP.Y + block.Points[block.ObjectRotation, i1, 1] * blockS.Height,
+                        blockS.Width, blockS.Height)));
+                }
+                this.Invalidate();
+            }
         }
 
         private void MoveObject(int deltaX, int deltaY)
