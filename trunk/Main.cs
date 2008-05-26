@@ -19,7 +19,7 @@ namespace Tetris
         Point startP = new Point();
         Pen pen = new Pen(Color.Black,1);
         Brush brush;
-
+        Timer tCount;
         public Main()
         {
             InitializeComponent();
@@ -41,7 +41,7 @@ namespace Tetris
 
             AddObject();
 
-            Timer tCount = new Timer();
+            tCount = new Timer();
             tCount.Tick += new EventHandler(tCount_Tick);
             tCount.Interval = 500;
             tCount.Start();
@@ -81,8 +81,11 @@ namespace Tetris
             //neues zufälliges Objekt generieren
             startP.X = (this.ClientSize.Width / 2) - (blockS.Width / 2);
             startP.Y = blockS.Height;
+            // neues Random-Objekt
             Random rnd = new Random();
+            // Wähle ein Element zwischen 1 und maximaler Anzahl
             int irnd = rnd.Next(1, Enum.GetValues(typeof(TetronType)).Length);
+            // Verändere den Typ des blocks
             block.ChangeType((TetronType)irnd);
             for (int i1 = 0; i1 < 4; i1++)
             {
@@ -231,6 +234,10 @@ namespace Tetris
                 case Keys.Up:
                 case Keys.W:
                     RotateObject();
+                    break;
+                case Keys.Down:
+                case Keys.S:
+                    tCount_Tick(null, null);
                     break;
                 case Keys.Escape:
                     this.Close();
