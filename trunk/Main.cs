@@ -47,24 +47,6 @@ namespace Tetris
             tCount.Enabled = true;
         }
 
-        private void Main_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            switch ((Keys)e.KeyChar)
-            {
-                case (Keys)'a':
-                    MoveObject(-1, 0);
-                    break;
-                case (Keys)'d':
-                    MoveObject(1, 0);
-                    break;
-                case (Keys)'w':
-                    RotateObject();
-                    break;
-                case Keys.Escape:
-                    this.Close();
-                    break;
-            }
-        }
 
         void tCount_Tick(object sender, EventArgs e)
         {
@@ -230,6 +212,28 @@ namespace Tetris
                 groundCollision = true;
             }
             return groundCollision;
+        }
+
+        private void Main_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyData)
+            {
+                case Keys.Left:
+                case Keys.A:
+                    MoveObject(-1, 0);
+                    break;
+                case Keys.Right:
+                case Keys.D:
+                    MoveObject(1, 0);
+                    break;
+                case Keys.Up:
+                case Keys.W:
+                    RotateObject();
+                    break;
+                case Keys.Escape:
+                    this.Close();
+                    break;
+            }
         }
     }
 }
