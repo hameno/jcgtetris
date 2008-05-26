@@ -25,7 +25,7 @@ namespace Tetris
             InitializeComponent();
 
             //Eigenschaften der Oberfläche definieren
-            this.ClientSize = new Size(500, 500);
+            this.ClientSize = new Size(400, 600);
 
             //Eigenschaften der Objekte definieren
             blockS.Width = this.ClientSize.Width / 10;
