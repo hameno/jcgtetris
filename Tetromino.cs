@@ -33,6 +33,51 @@ namespace Tetris
                     {{0,0}, {0,1}, {0,-1}, {0,-2}}};
                     _objectRotation = 0;
                     break;
+                case TetronType.O:
+                    _brush = Brushes.Yellow;
+                    _points = new short[4, 4, 2]
+                    {{{0,0}, {-1,0}, {-1,-1}, {0,-1}},
+                    {{0,0}, {-1,0}, {-1,-1}, {0,-1}},
+                    {{0,0}, {-1,0}, {-1,-1}, {0,-1}},
+                    {{0,0}, {-1,0}, {-1,-1}, {0,-1}}};
+                    _objectRotation = 0;
+                    break;
+                case TetronType.J:
+                    _brush = Brushes.Blue;
+                    _points = new short[4, 4, 2]
+                    {{{0,0}, {1,0}, {1,1}, {-1,0}},
+                    {{0,0}, {0,1}, {-1,1}, {0,-1}},
+                    {{0,0}, {1,0}, {-1,0}, {-1,-1}},
+                    {{0,0}, {0,1}, {0,-1}, {1,-1}}};
+                    _objectRotation = 0;
+                    break;
+                case TetronType.L:
+                    _brush = Brushes.Orange;
+                    _points = new short[4, 4, 2]
+                    {{{0,0}, {1,0}, {-1,1}, {-1,0}},
+                    {{0,0}, {0,1}, {-1,-1}, {0,-1}},
+                    {{0,0}, {1,0}, {-1,0}, {1,-1}},
+                    {{0,0}, {1,1}, {0,1}, {0,-1}}};
+                    _objectRotation = 0;
+                    break;
+                case TetronType.S:
+                    _brush = Brushes.Green;
+                    _points = new short[4, 4, 2]
+                    {{{0,0}, {1,0}, {0,1}, {-1,1}},
+                    {{0,0}, {1,0}, {1,1}, {0,-1}},
+                    {{0,0}, {1,0}, {0,1}, {-1,1}},
+                    {{0,0}, {1,0}, {1,1}, {0,-1}}};
+                    _objectRotation = 0;
+                    break;
+                case TetronType.Z:
+                    _brush = Brushes.Red;
+                    _points = new short[4, 4, 2]
+                    {{{0,0}, {1,1}, {0,1}, {-1,0}},
+                    {{0,0}, {1,0}, {0,1}, {1,-1}},
+                    {{0,0}, {1,1}, {0,1}, {-1,0}},
+                    {{0,0}, {1,0}, {0,1}, {1,-1}}};
+                    _objectRotation = 0;
+                    break;
                 case TetronType.T:
                     _brush = Brushes.Purple;
                     _points = new short[4, 4, 2]
