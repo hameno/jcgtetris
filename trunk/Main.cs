@@ -44,7 +44,7 @@ namespace Tetris
             Timer tCount = new Timer();
             tCount.Tick += new EventHandler(tCount_Tick);
             tCount.Interval = 500;
-            tCount.Enabled = true;
+            tCount.Start();
         }
 
 
@@ -81,7 +81,9 @@ namespace Tetris
             //neues zufälliges Objekt generieren
             startP.X = (this.ClientSize.Width / 2) - (blockS.Width / 2);
             startP.Y = blockS.Height;
-            block.ChangeType(TetronType.I);
+            Random rnd = new Random();
+            int irnd = rnd.Next(1, Enum.GetValues(typeof(TetronType)).Length);
+            block.ChangeType((TetronType)irnd);
             for (int i1 = 0; i1 < 4; i1++)
             {
                 currentObject.Add(new MyRectangle(block.Pen, block.Brush, new Rectangle(
