@@ -11,13 +11,31 @@ namespace Tetris
 {
     public partial class Main : Form
     {
+        Tetromino block = new Tetromino();
         List<MyGraphicObject> currentObject = new List<MyGraphicObject>();
         List<MyGraphicObject> groundObject = new List<MyGraphicObject>();
+
+        Size blockS = new Size();
+        Point startP = new Point();
+        Pen pen = new Pen(Color.Black,1);
+        Brush brush;
 
         public Main()
         {
             InitializeComponent();
+
+            //Eigenschaften der Oberfläche definieren
             this.ClientSize = new Size(500, 500);
+
+            //Eigenschaften der Objekte definieren
+            blockS.Width = this.ClientSize.Width / 10;
+            blockS.Height = this.ClientSize.Width / 10;
+            startP.X = (this.ClientSize.Width / 2) - (blockS.Width / 2);
+            startP.Y = blockS.Height;
+            pen.Color = Color.Black;
+            pen.Width = 1;
+            brush = Brushes.Navy;
+
             //Damit geht das Neuzeichnen viel flüssiger
             this.DoubleBuffered = true;
 
@@ -27,6 +45,25 @@ namespace Tetris
             tCount.Tick += new EventHandler(tCount_Tick);
             tCount.Interval = 500;
             tCount.Enabled = true;
+        }
+
+        private void Main_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            switch ((Keys)e.KeyChar)
+            {
+                case (Keys)'a':
+                    MoveObject(-1, 0);
+                    break;
+                case (Keys)'d':
+                    MoveObject(1, 0);
+                    break;
+                case (Keys)'w':
+                    RotateObject();
+                    break;
+                case Keys.Escape:
+                    this.Close();
+                    break;
+            }
         }
 
         void tCount_Tick(object sender, EventArgs e)
@@ -56,32 +93,48 @@ namespace Tetris
                 groundObject.Add(go);
             }
             
-            //neues Objekt hinzufügen
-            Pen pen = new Pen(Color.Black,1);
-            Brush brush = Brushes.Navy;
+            //altes Objekt löschen
             currentObject.Clear();
             
-            //Eigenschaften der Objekte definieren
-            Point startP = new Point();
-            Size blockS = new Size();
-            startP.X = (this.ClientSize.Width / 2) - (this.ClientSize.Width / 10 / 2);
-            startP.Y = 0;
-            blockS.Width = this.ClientSize.Width / 10;
-            blockS.Height = this.ClientSize.Width / 10;
-
-            //zufälliges Objekt generieren
-            currentObject.Add(new MyRectangle(pen, brush, new Rectangle(startP.X, startP.Y, blockS.Width, blockS.Height)));
-            currentObject.Add(new MyRectangle(pen, brush, new Rectangle(startP.X, startP.Y + blockS.Height, this.ClientSize.Width / 10, this.ClientSize.Width / 10)));
-            currentObject.Add(new MyRectangle(pen, brush, new Rectangle(startP.X - blockS.Width, startP.Y + blockS.Height, this.ClientSize.Width / 10, this.ClientSize.Width / 10)));
-            currentObject.Add(new MyRectangle(pen, brush, new Rectangle(startP.X + blockS.Width, startP.Y + blockS.Height, this.ClientSize.Width / 10, this.ClientSize.Width / 10)));
-            
+            //neues zufälliges Objekt generieren
+            block.ChangeType(TetronType.T);
+            for (int i1 = 0; i1 < 4; i1++)
+            {
+                currentObject.Add(new MyRectangle(block.Pen, block.Brush, new Rectangle(
+                    startP.X + block.Points[block.ObjectRotation, i1, 0] * blockS.Width,
+                    startP.Y + block.Points[block.ObjectRotation, i1, 1] * blockS.Height,
+                    blockS.Width, blockS.Height)));
+            }
+          
             //Zeichenfläche aktualisieren
             this.Invalidate();
         }
 
         private void RotateObject()
         {
+            block.Rotate();
 
+
+          /*  int deltaX;
+            int deltaY;
+            bool rotationCollision = false;
+
+            deltaX = 1;
+            deltaY = 1;
+            if ((BorderCollision(deltaX, deltaY, goCurrentObject) == true) ||
+                (GroundCollision(deltaX, deltaY, goCurrentObject) == true))
+            {
+                rotationCollision = true;
+            }
+
+            currentObject[1].Move(deltaX * blockS.Width, deltaY * blockS.Height);
+            deltaX = 1;
+            deltaY = -1;
+            currentObject[2].Move(deltaX * blockS.Width, deltaY * blockS.Height);
+            deltaX = -1;
+            deltaY = 1;
+            currentObject[3].Move(deltaX * blockS.Width, deltaY * blockS.Height);
+            this.Invalidate(); */
         }
 
         private void MoveObject(int deltaX, int deltaY)
@@ -89,43 +142,19 @@ namespace Tetris
             bool borderCollision = false;
             foreach (MyGraphicObject goCurrentObject in currentObject)
             {
-                if ((goCurrentObject.Position().X + (deltaX * this.ClientSize.Width / 10) <= this.ClientSize.Width - (this.ClientSize.Width / 10)) &&
-                    (goCurrentObject.Position().X + (deltaX * this.ClientSize.Width / 10) >= this.ClientSize.Width / 10 / 2))
-                {
-                    foreach (MyGraphicObject go in groundObject)
-                    {
-                        if ((go.Position().X == goCurrentObject.Position().X + (deltaX * this.ClientSize.Width / 10)) &&
-                            (go.Position().Y == goCurrentObject.Position().Y))
-                        {
-                            borderCollision = true;
-                            break;
-                        }
-                    }
-                }
-                else
+                if (BorderCollision(deltaX, deltaY, goCurrentObject) == true)
                 {
                     borderCollision = true;
+                    break;
                 }
             }
-
             bool groundCollision = false;
             foreach (MyGraphicObject goCurrentObject in currentObject)
             {
-                if (goCurrentObject.Position().Y + (deltaY * this.ClientSize.Width / 10) <= this.ClientSize.Height - (this.ClientSize.Width / 10))
-                {
-                    foreach (MyGraphicObject go in groundObject)
-                    {
-                        if ((go.Position().Y == goCurrentObject.Position().Y + (this.ClientSize.Width / 10)) &&
-                            (go.Position().X == goCurrentObject.Position().X))
-                        {
-                            groundCollision = true;
-                            break;
-                        }
-                    }
-                }
-                else
+                if (GroundCollision(deltaX, deltaY, goCurrentObject) == true)
                 {
                     groundCollision = true;
+                    break;
                 }
             }
 
@@ -133,7 +162,7 @@ namespace Tetris
             {
                 foreach (MyGraphicObject goCurrentObject in currentObject)
                 {
-                    goCurrentObject.Move(deltaX * this.ClientSize.Width / 10, deltaY * this.ClientSize.Width / 10);
+                    goCurrentObject.Move(deltaX * blockS.Width, deltaY * blockS.Height);
                 }
                 this.Invalidate();
             }
@@ -143,23 +172,49 @@ namespace Tetris
             }
         }
 
-        private void Main_KeyPress(object sender, KeyPressEventArgs e)
+        private bool BorderCollision(int deltaX, int deltaY, MyGraphicObject goCurrentObject)
         {
-            switch ((Keys)e.KeyChar)
+            bool borderCollision = false;
+            if ((goCurrentObject.Position().X + (deltaX * blockS.Width) <= this.ClientSize.Width - blockS.Width) &&
+                (goCurrentObject.Position().X + (deltaX * blockS.Width) >= blockS.Width / 2))
             {
-                case (Keys)'a':
-                    MoveObject(-1, 0);
-                    break;
-                case (Keys)'d':
-                    MoveObject(1, 0);
-                    break;
-                case (Keys)'w':
-                    RotateObject();
-                    break;
-                case Keys.Escape:
-                    this.Close();
-                    break;
+                foreach (MyGraphicObject go in groundObject)
+                {
+                    if ((go.Position().X == goCurrentObject.Position().X + (deltaX * blockS.Width)) &&
+                        (go.Position().Y == goCurrentObject.Position().Y))
+                    {
+                        borderCollision = true;
+                        break;
+                    }
+                }
             }
+            else
+            {
+                borderCollision = true;
+            }
+            return borderCollision;
+        }
+
+        private bool GroundCollision(int deltaX, int deltaY, MyGraphicObject goCurrentObject)
+        {
+            bool groundCollision = false;
+            if (goCurrentObject.Position().Y + (deltaY * blockS.Height) <= this.ClientSize.Height - blockS.Height)
+            {
+                foreach (MyGraphicObject go in groundObject)
+                {
+                    if ((go.Position().Y == goCurrentObject.Position().Y + blockS.Height) &&
+                        (go.Position().X == goCurrentObject.Position().X))
+                    {
+                        groundCollision = true;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                groundCollision = true;
+            }
+            return groundCollision;
         }
     }
 }
