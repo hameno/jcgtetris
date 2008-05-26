@@ -24,6 +24,15 @@ namespace Tetris
             _tetronType = tetronType;
             switch (_tetronType)
             {
+                case TetronType.I:
+                    _brush = Brushes.Cyan;
+                    _points = new short[4, 4, 2]
+                    {{{0,0}, {1,0}, {-1,0}, {-2,0}},
+                    {{0,0}, {0,1}, {0,-1}, {0,-2}},
+                    {{0,0}, {1,0}, {-1,0}, {-2,0}},
+                    {{0,0}, {0,1}, {0,-1}, {0,-2}}};
+                    _objectRotation = 0;
+                    break;
                 case TetronType.T:
                     _brush = Brushes.Purple;
                     _points = new short[4, 4, 2]
