@@ -41,8 +41,8 @@ namespace Tetris
             tCount = new Timer();
             tCount.Tick += new EventHandler(tCount_Tick);
             tCount.Interval = 500;
-            ShowMenu = true;
-            
+            ShowMenu = false;
+            StartGame();
         }
         
         private void StartGame()
