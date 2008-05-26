@@ -81,7 +81,7 @@ namespace Tetris
             //neues zufälliges Objekt generieren
             startP.X = (this.ClientSize.Width / 2) - (blockS.Width / 2);
             startP.Y = blockS.Height;
-            block.ChangeType(TetronType.T);
+            block.ChangeType(TetronType.I);
             for (int i1 = 0; i1 < 4; i1++)
             {
                 currentObject.Add(new MyRectangle(block.Pen, block.Brush, new Rectangle(
