@@ -38,16 +38,18 @@ namespace Tetris
 
             //Damit geht das Neuzeichnen viel flüssiger
             this.DoubleBuffered = true;
-
-            AddObject();
-
             tCount = new Timer();
             tCount.Tick += new EventHandler(tCount_Tick);
             tCount.Interval = 500;
+            ShowMenu = true;
+            
+        }
+        
+        private void StartGame()
+        {
+            AddObject();
             tCount.Start();
         }
-
-
         void tCount_Tick(object sender, EventArgs e)
         {
             MoveObject(0,1);
@@ -55,15 +57,22 @@ namespace Tetris
 
         private void Main_Paint(object sender, PaintEventArgs e)
         {
-            e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
-            e.Graphics.Clear(Color.White);
-            foreach (MyGraphicObject go in currentObject)
+            if (IsAtMenu)
             {
-                go.Draw(e.Graphics);
+                DrawMenu(e);
             }
-            foreach (MyGraphicObject go in groundObject)
+            else
             {
-                go.Draw(e.Graphics);
+                e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
+                e.Graphics.Clear(Color.White);
+                foreach (MyGraphicObject go in currentObject)
+                {
+                    go.Draw(e.Graphics);
+                }
+                foreach (MyGraphicObject go in groundObject)
+                {
+                    go.Draw(e.Graphics);
+                }
             }
         }
 
@@ -98,45 +107,48 @@ namespace Tetris
             //Zeichenfläche aktualisieren
             this.Invalidate();
         }
-
+        private bool IsRunning
+        {
+            get { return tCount.Enabled; }
+        }
         private void RotateObject()
         {
-            startP.X = currentObject[0].Position().X;
-            startP.Y = currentObject[0].Position().Y;
+                startP.X = currentObject[0].Position().X;
+                startP.Y = currentObject[0].Position().Y;
 
-            block.Rotate();
+                block.Rotate();
 
-            bool rotationCollision = false;
-            for (int i1 = 0; i1 < 4; i1++)
-            {
-                MyGraphicObject tmpGo = new MyRectangle(block.Pen, block.Brush, new Rectangle(
-                        startP.X + block.Points[block.ObjectRotation, i1, 0] * blockS.Width,
-                        startP.Y + block.Points[block.ObjectRotation, i1, 1] * blockS.Height,
-                        blockS.Width, blockS.Height));
-
-                if ((BorderCollision(0, 0, tmpGo) == true) ||
-                    (GroundCollision(0, 0, tmpGo) == true))
-                {
-                    rotationCollision = true;
-                }
-            }
-
-            if (rotationCollision == true)
-            {
-                block.RotateBack();
-            }
-            else
-            {
-                currentObject.Clear();
+                bool rotationCollision = false;
                 for (int i1 = 0; i1 < 4; i1++)
                 {
-                    currentObject.Add(new MyRectangle(block.Pen, block.Brush, new Rectangle(
-                        startP.X + block.Points[block.ObjectRotation, i1, 0] * blockS.Width,
-                        startP.Y + block.Points[block.ObjectRotation, i1, 1] * blockS.Height,
-                        blockS.Width, blockS.Height)));
+                    MyGraphicObject tmpGo = new MyRectangle(block.Pen, block.Brush, new Rectangle(
+                            startP.X + block.Points[block.ObjectRotation, i1, 0] * blockS.Width,
+                            startP.Y + block.Points[block.ObjectRotation, i1, 1] * blockS.Height,
+                            blockS.Width, blockS.Height));
+
+                    if ((BorderCollision(0, 0, tmpGo) == true) ||
+                        (GroundCollision(0, 0, tmpGo) == true))
+                    {
+                        rotationCollision = true;
+                    }
                 }
-                this.Invalidate();
-            }
+
+                if (rotationCollision == true)
+                {
+                    block.RotateBack();
+                }
+                else
+                {
+                    currentObject.Clear();
+                    for (int i1 = 0; i1 < 4; i1++)
+                    {
+                        currentObject.Add(new MyRectangle(block.Pen, block.Brush, new Rectangle(
+                            startP.X + block.Points[block.ObjectRotation, i1, 0] * blockS.Width,
+                            startP.Y + block.Points[block.ObjectRotation, i1, 1] * blockS.Height,
+                            blockS.Width, blockS.Height)));
+                    }
+                    this.Invalidate();
+                }
         }
 
         private void MoveObject(int deltaX, int deltaY)
@@ -225,18 +237,22 @@ namespace Tetris
             {
                 case Keys.Left:
                 case Keys.A:
+                    if(IsRunning)
                     MoveObject(-1, 0);
                     break;
                 case Keys.Right:
                 case Keys.D:
+                    if (IsRunning)
                     MoveObject(1, 0);
                     break;
                 case Keys.Up:
                 case Keys.W:
+                    if (IsRunning)
                     RotateObject();
                     break;
                 case Keys.Down:
                 case Keys.S:
+                    if (IsRunning)
                     tCount_Tick(null, null);
                     break;
                 case Keys.Escape:
