@@ -32,6 +32,9 @@ namespace Tetris
             //altes Objekt löschen
             currentObject.Clear();
 
+            //Checken, ob eine Reihe fertig ist
+
+
             //neues zufälliges Objekt generieren
             startP.X = fieldP.X + (fieldS.Width / 2) - blockS.Width;
             startP.Y = fieldP.Y + blockS.Height;
@@ -64,7 +67,16 @@ namespace Tetris
             {
                 //GameOver
                 GameOver = true;
+                this.Invalidate();
             }
+        }
+
+        private void CheckLines()
+        {/*
+            foreach (MyGraphicObject goCurrentObject in groundObject)
+            {
+
+            }*/
         }
 
         private void RotateObject()
