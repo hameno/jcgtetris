@@ -15,6 +15,7 @@ namespace Tetris
         List<MyGraphicObject> currentObject = new List<MyGraphicObject>();
         List<MyGraphicObject> groundObject = new List<MyGraphicObject>();
 
+        Point fieldP = new Point();
         Size fieldS = new Size();
         Size blockS = new Size();
         Point startP = new Point();
@@ -24,7 +25,6 @@ namespace Tetris
         private void InitGame()
         {
             //Eigenschaften der Objekte definieren
-
             fieldS.Width = 400;
             fieldS.Height = 600;
             blockS.Width = fieldS.Width / 10;
