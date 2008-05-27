@@ -32,6 +32,8 @@ namespace Tetris
         private TetronType nextStein;
         private Difficulty Schwierigkeitsgrad;
         List<MyGraphicObject> fieldObjects = new List<MyGraphicObject>();
+        List<MyGraphicObject> previewObject = new List<MyGraphicObject>();
+        Tetromino previewBlock = new Tetromino();
         List<MyText> textObjects = new List<MyText>();
         /// <summary>
         /// Level bei sound so vielen Steinen
@@ -65,6 +67,7 @@ namespace Tetris
             tCount.Interval = 500;
             alterStein = TetronType.I;
             iLevel = 1;
+            
             iReihen = 0;
             //Eigenschaften der Objekte definieren
             // Größe des Feldes
@@ -86,6 +89,7 @@ namespace Tetris
             fieldObjects.Add(new MyRectangle(this, Pens.Black, Brushes.Transparent, new Rectangle(fieldP, fieldS)));
             // Nächster Block
             fieldObjects.Add(new MyRectangle(this, Pens.Black, Brushes.Transparent, new Rectangle(new Point(fieldP.X+fieldS.Width+5, fieldP.Y), new Size(150, 150))));
+            GenerateNextBlockType();
             // Spielinformationen
             Point SpielInfoPunkt = new Point(fieldP.X + fieldS.Width + 5, fieldP.Y + 155);
             fieldObjects.Add(new MyRectangle(this, Pens.Black, Brushes.Transparent, new Rectangle(SpielInfoPunkt, new Size(150, fieldS.Height - 155))));
@@ -111,10 +115,24 @@ namespace Tetris
 
             bShowMenu = false;
             StartGame();
-
-            
+  
         }
-
+        private void GenerateNextBlockType()
+        {
+            previewObject.Clear();
+            nextStein = GenerateRandomTetronType();
+            previewBlock.ChangeType(nextStein);
+            for (int i1 = 0; i1 < 4; i1++)
+            {
+                previewObject.Add(new MyRectangle(this, previewBlock.Pen, previewBlock.Brush, new Rectangle(
+                    (int)fieldObjects[1].GetRectangle().X + 1 + previewBlock.Points[previewBlock.ObjectRotation, i1, 0] * 10,
+                    (int)fieldObjects[1].GetRectangle().Y + 1 + previewBlock.Points[previewBlock.ObjectRotation, i1, 1] * 10,
+                    10, 10)));
+                //Zeichenfläche aktualisieren
+                previewObject[i1].ApplyChanges();
+            }
+            fieldObjects[1].ApplyChanges();
+        }
         private void ResetGame()
         {
             this.Invalidate();
