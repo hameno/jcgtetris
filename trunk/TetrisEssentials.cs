@@ -47,7 +47,9 @@ namespace Tetris
             startP.Y = fieldP.Y + blockS.Height;
 
             // Verändere den Typ des blocks
+            GenerateNextBlockType();
             block.ChangeType(nextStein);
+            GenerateNextBlockType();
 
             //Neuen Block erstellen
             for (int i1 = 0; i1 < 4; i1++)
