@@ -14,7 +14,7 @@ namespace Tetris
         Tetromino block = new Tetromino();
         List<MyGraphicObject> currentObject = new List<MyGraphicObject>();
         List<MyGraphicObject> groundObject = new List<MyGraphicObject>();
-        MyGraphicObject groundObjects;
+        GraphicsPath groundObjects = new GraphicsPath();
 
         Point fieldP = new Point();
         Size fieldS = new Size();
@@ -24,22 +24,16 @@ namespace Tetris
 
         private void AddObject()
         {
-            //altes Objekt mit Boden verbinden
+            //Altes Objekt zum Boden hinzufügen
             foreach (MyGraphicObject go in currentObject)
             {
-                groundObject.Add(go);
+                groundObject.Add(new MyRectangle(this, block.Pen, block.Brush, Rectangle.Round(go.GetRectangle())));
             }
 
-            if (groundObjects == null)
-            {
-                groundObjects = new MyGraphicObject(this, pen, Brushes.White);
-            }
-
-            groundObjects.Pen = block.Pen;
-            groundObjects.Brush = block.Brush;
+            //Altes Objekt zu den zur Kollision nötigen Abfragen hinzufügen
             foreach (MyGraphicObject go in currentObject)
             {
-                groundObjects.Path.AddRectangle(go.GetRectangle());
+                groundObjects.AddRectangle(Rectangle.Round(go.GetRectangle()));
             }
 
             //altes Objekt löschen
@@ -184,15 +178,13 @@ namespace Tetris
             if ((goCurrentObject.Position().X + (deltaX * blockS.Width) <= fieldP.X + fieldS.Width - blockS.Width) &&
                 (goCurrentObject.Position().X + (deltaX * blockS.Width) >= fieldP.X))
             {
-                foreach (MyGraphicObject go in groundObject)
+                if (groundObjects.IsVisible(
+                    goCurrentObject.Position().X + (deltaX * blockS.Width),
+                    goCurrentObject.Position().Y))
                 {
-                    if ((go.Position().X == goCurrentObject.Position().X + (deltaX * blockS.Width)) &&
-                        (go.Position().Y == goCurrentObject.Position().Y))
-                    {
-                        borderCollision = true;
-                        break;
-                    }
+                    borderCollision = true;
                 }
+
             }
             else
             {
@@ -206,14 +198,11 @@ namespace Tetris
             bool groundCollision = false;
             if (goCurrentObject.Position().Y + (deltaY * blockS.Height) <= fieldP.Y + fieldS.Height - blockS.Height)
             {
-                foreach (MyGraphicObject go in groundObject)
+                if (groundObjects.IsVisible(
+                    goCurrentObject.Position().X,
+                    goCurrentObject.Position().Y + blockS.Width))
                 {
-                    if ((go.Position().Y == goCurrentObject.Position().Y + blockS.Height) &&
-                        (go.Position().X == goCurrentObject.Position().X))
-                    {
-                        groundCollision = true;
-                        break;
-                    }
+                    groundCollision = true;
                 }
             }
             else

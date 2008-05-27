@@ -95,7 +95,6 @@ namespace Tetris
             Path.AddRectangle(rect);
             SetBounds();
         }
-
     }
 
     public class MyCircle : MyGraphicObject
