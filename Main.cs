@@ -19,8 +19,12 @@ namespace Tetris
 
         public int Level
         {
-            get { return iLevel; }
-            set { 
+            get
+            {
+                return iLevel;
+            }
+            set
+            {
                 iLevel = value;
                 textObjects[1].ChangeText("Level: " + iLevel.ToString());
                 textObjects[1].ApplyChanges();
@@ -62,12 +66,11 @@ namespace Tetris
             textObjects.Clear();
             // Schwierigkeitsgrad auf Mittel setzen
             Schwierigkeitsgrad = Difficulty.Einfach;
-            iSpeedFactor = 10;
-            iReihenZumLevelup = 5;
-            tCount.Interval = 500;
+            iSpeedFactor = 20;
+            iReihenZumLevelup = 3;
+            tCount.Interval = 400;
             alterStein = TetronType.I;
             iLevel = 1;
-            
             iReihen = 0;
             //Eigenschaften der Objekte definieren
             // Größe des Feldes
@@ -89,7 +92,6 @@ namespace Tetris
             fieldObjects.Add(new MyRectangle(this, Pens.Black, Brushes.Transparent, new Rectangle(fieldP, fieldS)));
             // Nächster Block
             fieldObjects.Add(new MyRectangle(this, Pens.Black, Brushes.Transparent, new Rectangle(new Point(fieldP.X+fieldS.Width+5, fieldP.Y), new Size(150, 150))));
-            
             // Spielinformationen
             Point SpielInfoPunkt = new Point(fieldP.X + fieldS.Width + 5, fieldP.Y + 155);
             fieldObjects.Add(new MyRectangle(this, Pens.Black, Brushes.Transparent, new Rectangle(SpielInfoPunkt, new Size(150, fieldS.Height - 155))));
@@ -115,7 +117,6 @@ namespace Tetris
 
             bShowMenu = false;
             StartGame();
-  
         }
         private void GenerateNextBlockType()
         {
@@ -131,7 +132,6 @@ namespace Tetris
                 //Zeichenfläche aktualisieren
                 previewObject[i1].ApplyChanges();
             }
-            fieldObjects[2].ApplyChanges();
         }
         private void ResetGame()
         {
@@ -152,7 +152,7 @@ namespace Tetris
         {
             if ((iReihen % iReihenZumLevelup) == 0 && iReihen > 0)
             {
-                Level++;
+                Level += 1;
                 IncreaseSpeed();
             }
         }
@@ -213,6 +213,7 @@ namespace Tetris
             set
             {
                 iReihen = value;
+                CheckForLevelUp();
                 textObjects[2].ChangeText("Reihen: " + iReihen.ToString());
                 textObjects[2].ApplyChanges();
             }
