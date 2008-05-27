@@ -17,6 +17,7 @@ namespace Tetris
         private int iReihen;
         private int iLevel;
         private int iReihenZumLevelup;
+        private bool GameOver;
         private TetronType alterStein;
         private Difficulty Schwierigkeitsgrad;
         List<MyGraphicObject> fieldObjects = new List<MyGraphicObject>();
@@ -41,19 +42,21 @@ namespace Tetris
         private void InitGame()
         {
             //Eigenschaften der Objekte definieren
+            // Größe des Feldes
             fieldS.Width = 400;
             fieldS.Height = 600;
+            // Anfangspunkt von oben links des Feldes
             fieldP.X = 5;
             fieldP.Y = 50;
-            blockS.Width = fieldS.Width / 10;
-            blockS.Height = fieldS.Width / 10;
-            startP.X = (fieldS.Width / 2) - (blockS.Width / 2);
-            startP.Y = blockS.Height;
-            pen.Color = Color.Black;
-            pen.Width = 1;
-            brush = Brushes.Navy;
+            // Blockgröße
+            blockS.Width = fieldS.Width / 20;
+            blockS.Height = blockS.Width;
+            // Mittelpunkt eines blockes
+            //startP.X = (fieldS.Width / 2) - (blockS.Width / 2);
+            //startP.Y = blockS.Height;
+            GameOver = false;
             // Spielüberschrift
-            fieldObjects.Add(new MyText(this, Pens.BlueViolet, Brushes.Transparent, "JCG Tetris", FontFamily.GenericSerif, FontStyle.Bold, 20, new Point(5, 5)));
+            fieldObjects.Add(new MyText(this, Pens.Transparent, Brushes.SteelBlue, "JCG Tetris", FontFamily.GenericSerif, FontStyle.Bold, 30, new Point(5, 5)));
             // Spielfeld
             fieldObjects.Add(new MyRectangle(this, Pens.Black, Brushes.Transparent, new Rectangle(fieldP, fieldS)));
             // Spielinformationen
@@ -66,7 +69,7 @@ namespace Tetris
             InitializeComponent();
 
             //Eigenschaften der Oberfläche definieren
-            this.ClientSize = new Size(5+400+20+150+5, 800);
+            this.ClientSize = new Size(5+400+20+150+5, 680);
 
             //Damit geht das Neuzeichnen viel flüssiger
             this.DoubleBuffered = true;
@@ -98,10 +101,11 @@ namespace Tetris
         }
         private void CheckForLevelUp()
         {
-            if ((iReihen % iReihenZumLevelup) == 0)
+            if ((iReihen % iReihenZumLevelup) == 0 && iReihen > 0)
             {
                 iLevel++;
                 IncreaseSpeed();
+                fieldObjects[2].ApplyChanges();
             }
         }
         void tCount_Tick(object sender, EventArgs e)
@@ -141,21 +145,40 @@ namespace Tetris
                 tCount.Interval -= (iSpeedFactor*(int)Schwierigkeitsgrad) * iReihen;
             }
         }
-
+        public int Reihen
+        {
+            get
+            {
+                return iReihen;
+            }
+            set
+            {
+                iReihen = value;
+                fieldObjects[2].ApplyChanges();
+            }
+        }
         private void Main_Paint(object sender, PaintEventArgs e)
         {
+            // Antialising
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            // Spielfeld leeren
+            e.Graphics.Clear(Color.White);
             if (IsAtMenu)
             {
                 DrawMenu(e);
             }
+            else if (GameOver)
+            {
+
+            }
             else
             {
-                
-                e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-                e.Graphics.Clear(Color.White);
-                Font f = new Font(FontFamily.GenericSansSerif, 20);
+                // Spielinformationen
+                Font f = new Font(FontFamily.GenericSerif, 20);
                 e.Graphics.DrawString("Speed: " + tCount.Interval.ToString(), f, Brushes.Black, new Point(fieldP.X + fieldS.Width + 20, fieldP.Y + 5));
-                e.Graphics.DrawString("Level: " + iLevel.ToString(), f, Brushes.Black, new Point(fieldP.X + fieldS.Width + 20, fieldP.Y + 5+ 20));
+                e.Graphics.DrawString("Level: " + iLevel.ToString(), f, Brushes.Black, new Point(fieldP.X + fieldS.Width + 20, fieldP.Y + 5 + 20));
+                e.Graphics.DrawString("Reihen: " + iReihen.ToString(), f, Brushes.Black, new Point(fieldP.X + fieldS.Width + 20, fieldP.Y + 5 + 50));
+                // Objekte zeichnen
                 foreach (MyGraphicObject go in currentObject)
                 {
                     go.Draw(e.Graphics);
@@ -204,6 +227,10 @@ namespace Tetris
                     break;
                 case Keys.Escape:
                     this.Close();
+                    break;
+                case Keys.Z:
+                    Reihen++;
+                    CheckForLevelUp();
                     break;
             }
         }
