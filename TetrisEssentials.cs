@@ -137,6 +137,9 @@ namespace Tetris
 
                     //Globale Variable ändern
                     Reihen += 1;
+
+                    //Variable i1 der Vorschleife hochsetzen
+                    i1 += blockS.Height;
                 }
             }
             this.Invalidate();
