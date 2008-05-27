@@ -20,7 +20,6 @@ namespace Tetris
         Size blockS = new Size();
         Point startP = new Point();
         Pen pen = new Pen(Color.Black, 1);
-        Brush brush;
 
         private void AddObject()
         {
@@ -64,7 +63,6 @@ namespace Tetris
             if (groundCollision == true)
             {
                 //GameOver
-                currentObject.Clear();
                 GameOver = true;
             }
         }
