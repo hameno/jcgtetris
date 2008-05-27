@@ -120,12 +120,25 @@ namespace Tetris
 
     public class MyText : MyGraphicObject
     {
+        private FontFamily _family;
+        private FontStyle _style;
+        private float _emsize;
+        private Point _origin;
         public MyText(Control control, Pen pen, Brush brush, string text, FontFamily family, FontStyle style, float emSize, Point origin)
             : base(control, pen, brush)
         {
-            Path.AddString(text, family, (int)style, emSize, origin, null);
+            _family = family;
+            _style = style;
+            _emsize = emSize;
+            _origin = origin;
+            Path.AddString(text, _family, (int)_style, _emsize, _origin, null);
             SetBounds();
             //Path.GetType()
+        }
+        public void ChangeText(string text)
+        {
+            Path.Reset();
+            Path.AddString(text, _family, (int)_style, _emsize, _origin, null);
         }
     }
 }
