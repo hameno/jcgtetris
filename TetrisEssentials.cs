@@ -67,7 +67,6 @@ namespace Tetris
             {
                 //GameOver
                 GameOver = true;
-                this.Invalidate();
             }
         }
 
