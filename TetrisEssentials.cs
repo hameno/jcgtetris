@@ -40,7 +40,7 @@ namespace Tetris
             currentObject.Clear();
 
             //Checken, ob eine Reihe fertig ist
-
+            CheckLines();
 
             //neues zufälliges Objekt generieren
             startP.X = fieldP.X + (fieldS.Width / 2) - blockS.Width;
@@ -79,21 +79,51 @@ namespace Tetris
 
         private void CheckLines()
         {
-            
-            //groundObject2.Path.
-            
-            /*
-            for (int i1 = fieldS.Height - blockS.Height; i1 >= 0; i1 -= blockS.Height)
+            for (float i1 = fieldP.Y + fieldS.Height - (blockS.Height / 2); i1 >= fieldP.Y; i1 -= blockS.Height)
             {
-
                 bool noBlock = false;
-                do
+                for (float i2 = fieldP.X + (blockS.Width / 2); i2 <= fieldP.X + fieldS.Width; i2 += blockS.Width)
                 {
-                    groundObject[
+                    if (!groundObjects.IsVisible(i2, i1))
+                    {
+                        noBlock = true;
+                        break;
+                    }
                 }
-                while (noBlock != true);
+
+                if (noBlock == false)
+                {
+                    List<int> objectsToRemove = new List<int>();
+                    objectsToRemove.Clear();
+
+                    //Objekte auf der Höhe "i1" raussuchen
+                    for (int i2 = 0; i2 < groundObject.Count; i2++)
+                    {
+                        if (groundObject[i2].Path.IsVisible(new Point(groundObject[i2].Position().X, (int)i1)))
+                        {
+                            objectsToRemove.Add(i2);
+                            MessageBox.Show(Convert.ToString(i2));
+                        }
+                    }
+
+                    //Objekte auf der Höhe "i1" entfernen
+                    for (int iObject = 0; iObject < objectsToRemove.Count; iObject++)
+                    {
+                        groundObject.RemoveAt(objectsToRemove[iObject]);
+                        for (int iObject2 = 0; iObject2 < objectsToRemove.Count; iObject2++)
+                        {
+                            if (objectsToRemove[iObject2] > objectsToRemove[iObject])
+                            {
+                                objectsToRemove[iObject2] -= 1;
+                            }
+                        }
+                    }
+
+                    //Objekte ab der Höhe "i1" verschieben
+
+                }
             }
-             * */
+            this.Invalidate();
         }
 
         private void RotateObject()
