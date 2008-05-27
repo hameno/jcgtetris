@@ -17,6 +17,7 @@ namespace Tetris
         private int iReihen;
         private int iLevel;
         private int iReihenZumLevelup;
+        private TetronType alterStein;
         private Difficulty Schwierigkeitsgrad;
         /// <summary>
         /// Level bei sound so vielen Steinen
@@ -56,6 +57,7 @@ namespace Tetris
             tCount.Interval = 500;
             iSpeedFactor = 5;
             iReihenZumLevelup = 5;
+            alterStein = TetronType.I;
             iLevel = 1;
             iReihen = 0;
             bShowMenu = false;
@@ -74,6 +76,7 @@ namespace Tetris
             if ((iReihen % iReihenZumLevelup) == 0)
             {
                 iLevel++;
+                IncreaseSpeed();
             }
         }
         void tCount_Tick(object sender, EventArgs e)
@@ -81,7 +84,28 @@ namespace Tetris
             MoveObject(0,1);
             
         }
+        private TetronType GenerateRandomTetronType()
+        {
+            
+            TetronType neuStein;
+            // neues Random-Objekt
+            Random rnd = new Random();
+            // Wähle ein Element zwischen 1 und maximaler Anzahl
+            int irnd = rnd.Next(1, Enum.GetValues(typeof(TetronType)).Length);
+            if ((TetronType)irnd == alterStein)
+            {
+                MessageBox.Show("Musste neu generieren");
+                neuStein = GenerateRandomTetronType();
 
+            }
+            else
+            {
+                neuStein = (TetronType)irnd;
+            }
+            // Verändere den Typ des block
+            alterStein = neuStein;
+            return neuStein;
+        }
         private void IncreaseSpeed()
         {
             if ((tCount.Interval - (iSpeedFactor*(int)Schwierigkeitsgrad) * iReihen) > 0)
@@ -102,7 +126,8 @@ namespace Tetris
                 
                 e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
                 e.Graphics.Clear(Color.White);
-                e.Graphics.DrawString("Speed: " + tCount.Interval.ToString(), f, Brushes.Black, 50, 50);
+                e.Graphics.DrawString("Speed: " + tCount.Interval.ToString(), f, Brushes.Black,1, 1);
+                e.Graphics.DrawString("Level: " + iLevel.ToString(), f, Brushes.Black, 1, 21);
                 foreach (MyGraphicObject go in currentObject)
                 {
                     go.Draw(e.Graphics);
