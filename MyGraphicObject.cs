@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace Tetris
 {
-    public abstract class MyGraphicObject
+    public class MyGraphicObject
     {
         Pen _pen;
         Brush _brush;
@@ -22,7 +22,7 @@ namespace Tetris
             _control = control;
         }
 
-        protected GraphicsPath Path
+        public GraphicsPath Path
         {
             get { return _path; }
         }
@@ -125,6 +125,7 @@ namespace Tetris
         {
             Path.AddString(text, family, (int)style, emSize, origin, null);
             SetBounds();
+            //Path.GetType()
         }
     }
 }
