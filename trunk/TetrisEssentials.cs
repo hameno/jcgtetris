@@ -53,27 +53,27 @@ namespace Tetris
             //Neuen Block erstellen
             for (int i1 = 0; i1 < 4; i1++)
             {
-                currentObject.Add(new MyRectangle(block.Pen, block.Brush, new Rectangle(
+                currentObject.Add(new MyRectangle(this, block.Pen, block.Brush, new Rectangle(
                     startP.X + block.Points[block.ObjectRotation, i1, 0] * blockS.Width,
                     startP.Y + block.Points[block.ObjectRotation, i1, 1] * blockS.Height,
                     blockS.Width, blockS.Height)));
+                //Zeichenfläche aktualisieren
+                currentObject[i1].ApplyChanges();
             }
-
-            //Zeichenfläche aktualisieren
-            this.Invalidate();
         }
 
         private void RotateObject()
         {
             startP.X = currentObject[0].Position().X;
             startP.Y = currentObject[0].Position().Y;
+            short oldRotation = block.ObjectRotation;
 
             block.Rotate();
 
             bool rotationCollision = false;
             for (int i1 = 0; i1 < 4; i1++)
             {
-                MyGraphicObject tmpGo = new MyRectangle(block.Pen, block.Brush, new Rectangle(
+                MyGraphicObject tmpGo = new MyRectangle(this, block.Pen, block.Brush, new Rectangle(
                         startP.X + block.Points[block.ObjectRotation, i1, 0] * blockS.Width,
                         startP.Y + block.Points[block.ObjectRotation, i1, 1] * blockS.Height,
                         blockS.Width, blockS.Height));
@@ -91,15 +91,15 @@ namespace Tetris
             }
             else
             {
-                currentObject.Clear();
+                //currentObject.Clear();
                 for (int i1 = 0; i1 < 4; i1++)
                 {
-                    currentObject.Add(new MyRectangle(block.Pen, block.Brush, new Rectangle(
-                        startP.X + block.Points[block.ObjectRotation, i1, 0] * blockS.Width,
-                        startP.Y + block.Points[block.ObjectRotation, i1, 1] * blockS.Height,
-                        blockS.Width, blockS.Height)));
+                    currentObject[i1].Move(
+                        (block.Points[block.ObjectRotation, i1, 0] - block.Points[oldRotation, i1, 0]) * blockS.Width,
+                        (block.Points[block.ObjectRotation, i1, 1] - block.Points[oldRotation, i1, 1]) * blockS.Height);
+                    //Zeichenfläche aktualisieren
+                    currentObject[i1].ApplyChanges();
                 }
-                this.Invalidate();
             }
         }
 
@@ -129,8 +129,9 @@ namespace Tetris
                 foreach (MyGraphicObject goCurrentObject in currentObject)
                 {
                     goCurrentObject.Move(deltaX * blockS.Width, deltaY * blockS.Height);
+                    //Zeichenfläche aktualisieren
+                    goCurrentObject.ApplyChanges();
                 }
-                this.Invalidate();
             }
             else if (groundCollision == true)
             {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Text;
+using System.Windows.Forms;
 
 namespace Tetris
 {
@@ -10,12 +11,15 @@ namespace Tetris
     {
         Pen _pen;
         Brush _brush;
+        Rectangle _bounds;
+        Control _control;
         GraphicsPath _path = new GraphicsPath();
 
-        public MyGraphicObject(Pen pen, Brush brush)
+        public MyGraphicObject(Control control, Pen pen, Brush brush)
         {
             _pen = pen;
             _brush = brush;
+            _control = control;
         }
 
         protected GraphicsPath Path
@@ -31,6 +35,22 @@ namespace Tetris
         public Brush Brush
         {
             get { return _brush; }
+        }
+
+        public void SetBounds()
+        {
+            _bounds = Rectangle.Ceiling(_path.GetBounds());
+            _bounds.X -= 1;
+            _bounds.Width += 2;
+            _bounds.Y -= 1;
+            _bounds.Height += 2;
+        }
+
+        public void ApplyChanges()
+        {
+            _control.Invalidate(_bounds);
+            SetBounds();
+            _control.Invalidate(_bounds);
         }
 
         public virtual void Draw(Graphics g)
@@ -63,37 +83,41 @@ namespace Tetris
 
     public class MyRectangle : MyGraphicObject
     {
-        public MyRectangle(Pen pen, Brush brush, Rectangle rect)
-            : base(pen, brush)
+        public MyRectangle(Control control, Pen pen, Brush brush, Rectangle rect)
+            : base(control, pen, brush)
         {
             Path.AddRectangle(rect);
+            SetBounds();
         }
     }
 
     public class MyCircle : MyGraphicObject
     {
-        public MyCircle(Pen pen, Brush brush, Point center, int radius)
-            : base(pen, brush)
+        public MyCircle(Control control, Pen pen, Brush brush, Point center, int radius)
+            : base(control, pen, brush)
         {
             Path.AddEllipse(center.X - radius, center.Y - radius, 2 * radius, 2 * radius);
+            SetBounds();
         }
     }
 
     public class MyLine : MyGraphicObject
     {
-        public MyLine(Pen pen, Brush brush, Point start, Point end)
-            : base(pen, brush)
+        public MyLine(Control control, Pen pen, Brush brush, Point start, Point end)
+            : base(control, pen, brush)
         {
             Path.AddLine(start, end);
+            SetBounds();
         }
     }
 
     public class MyText : MyGraphicObject
     {
-        public MyText(Pen pen, Brush brush, string text, FontFamily family, FontStyle style, float emSize, Point origin)
-            : base(pen, brush)
+        public MyText(Control control, Pen pen, Brush brush, string text, FontFamily family, FontStyle style, float emSize, Point origin)
+            : base(control, pen, brush)
         {
             Path.AddString(text, family, (int)style, emSize, origin, null);
+            SetBounds();
         }
     }
 }
