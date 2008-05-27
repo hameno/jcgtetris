@@ -22,20 +22,6 @@ namespace Tetris
         Pen pen = new Pen(Color.Black, 1);
         Brush brush;
 
-        private void InitGame()
-        {
-            //Eigenschaften der Objekte definieren
-            fieldS.Width = 400;
-            fieldS.Height = 600;
-            blockS.Width = fieldS.Width / 10;
-            blockS.Height = fieldS.Width / 10;
-            startP.X = (fieldS.Width / 2) - (blockS.Width / 2);
-            startP.Y = blockS.Height;
-            pen.Color = Color.Black;
-            pen.Width = 1;
-            brush = Brushes.Navy;
-        }
-
         private void AddObject()
         {
             //altes Objekt mit Boden verbinden
