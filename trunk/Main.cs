@@ -54,6 +54,7 @@ namespace Tetris
         private void InitGame()
         {
             currentObject.Clear();
+            groundObjects.Reset();
             groundObject.Clear();
             fieldObjects.Clear();
             textObjects.Clear();
@@ -234,6 +235,7 @@ namespace Tetris
                 {
                     go.Draw(e.Graphics);
                 }
+                //Zeichnen der Bodenobjekte
                 foreach (MyGraphicObject go in groundObject)
                 {
                     go.Draw(e.Graphics);
