@@ -60,6 +60,9 @@ namespace Tetris
                     blockS.Width, blockS.Height)));
             }
 
+            //Speed erhöhen
+            IncreaseSpeed();
+
             //Zeichenfläche aktualisieren
             this.Invalidate();
         }
