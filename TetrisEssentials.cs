@@ -46,12 +46,11 @@ namespace Tetris
             //neues zufälliges Objekt generieren
             startP.X = (this.ClientSize.Width / 2) - (blockS.Width / 2);
             startP.Y = blockS.Height;
-            // neues Random-Objekt
-            Random rnd = new Random();
-            // Wähle ein Element zwischen 1 und maximaler Anzahl
-            int irnd = rnd.Next(1, Enum.GetValues(typeof(TetronType)).Length);
+
             // Verändere den Typ des blocks
-            block.ChangeType((TetronType)irnd);
+            block.ChangeType(GenerateRandomTetronType());
+
+            //Neuen Block erstellen
             for (int i1 = 0; i1 < 4; i1++)
             {
                 currentObject.Add(new MyRectangle(block.Pen, block.Brush, new Rectangle(
@@ -59,9 +58,6 @@ namespace Tetris
                     startP.Y + block.Points[block.ObjectRotation, i1, 1] * blockS.Height,
                     blockS.Width, blockS.Height)));
             }
-
-            //Speed erhöhen
-            IncreaseSpeed();
 
             //Zeichenfläche aktualisieren
             this.Invalidate();
