@@ -94,9 +94,7 @@ namespace Tetris
             int irnd = rnd.Next(1, Enum.GetValues(typeof(TetronType)).Length);
             if ((TetronType)irnd == alterStein)
             {
-                MessageBox.Show("Musste neu generieren");
                 neuStein = GenerateRandomTetronType();
-
             }
             else
             {
