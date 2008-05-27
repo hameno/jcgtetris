@@ -14,6 +14,16 @@ namespace Tetris
         Timer tCount;
         private bool bShowMenu;
         private int iSpeedFactor;
+        private int iReihen;
+        /// <summary>
+        /// Level bei sound so vielen Steinen
+        /// </summary>
+        private enum Difficulty : int
+        {
+            Einfach = 1,
+            Mittel = 2,
+            Schwer = 5
+        }
         private void DrawMenu(PaintEventArgs e)
         {
             e.Graphics.Clear(Color.White);
@@ -23,7 +33,7 @@ namespace Tetris
             e.Graphics.FillRectangle(Brushes.LightBlue, but1);
             e.Graphics.DrawRectangle(Pens.Red, but1);
         }
-
+        Difficulty dif;
         public Main()
         {
             InitializeComponent();
@@ -36,11 +46,12 @@ namespace Tetris
 
             //Startwerte für das Tetris-Game werden gesetzt
             InitGame();
-
+            dif = Difficulty.Mittel;
             tCount = new Timer();
             tCount.Tick += new EventHandler(tCount_Tick);
             tCount.Interval = 500;
-            iSpeedFactor = 30;
+            iSpeedFactor = 5;
+            iReihen = 0;
             bShowMenu = false;
             StartGame();
         }
@@ -61,9 +72,9 @@ namespace Tetris
 
         private void IncreaseSpeed()
         {
-            if ((tCount.Interval - iSpeedFactor * groundObject.Count) > 200)
+            if ((tCount.Interval - (iSpeedFactor*(int)dif) * iReihen) > 0)
             {
-                tCount.Interval -= iSpeedFactor * groundObject.Count;
+                tCount.Interval -= (iSpeedFactor*(int)dif) * iReihen;
             }
         }
 
@@ -75,8 +86,11 @@ namespace Tetris
             }
             else
             {
+                Font f= new Font(FontFamily.GenericSansSerif, 20);
+                
                 e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
                 e.Graphics.Clear(Color.White);
+                e.Graphics.DrawString("Speed: " + tCount.Interval.ToString(), f, Brushes.Black, 50, 50);
                 foreach (MyGraphicObject go in currentObject)
                 {
                     go.Draw(e.Graphics);
