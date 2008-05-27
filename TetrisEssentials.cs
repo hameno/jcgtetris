@@ -50,6 +50,23 @@ namespace Tetris
                 //Zeichenfläche aktualisieren
                 currentObject[i1].ApplyChanges();
             }
+
+            //GameOver-Bedingung überprüfen
+            bool groundCollision = false;
+            foreach (MyGraphicObject goCurrentObject in currentObject)
+            {
+                if (GroundCollision(0, 0, goCurrentObject) == true)
+                {
+                    groundCollision = true;
+                    break;
+                }
+            }
+            if (groundCollision == true)
+            {
+                //GameOver
+                currentObject.Clear();
+                GameOver = true;
+            }
         }
 
         private void RotateObject()
