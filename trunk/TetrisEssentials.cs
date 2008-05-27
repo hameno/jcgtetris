@@ -34,7 +34,7 @@ namespace Tetris
             currentObject.Clear();
 
             //neues zufälliges Objekt generieren
-            startP.X = fieldP.X + (fieldS.Width / 2) - (blockS.Width / 2);
+            startP.X = fieldP.X + (fieldS.Width / 2) - blockS.Width;
             startP.Y = fieldP.Y + blockS.Height;
 
             // Verändere den Typ des blocks
@@ -133,7 +133,7 @@ namespace Tetris
         {
             bool borderCollision = false;
             if ((goCurrentObject.Position().X + (deltaX * blockS.Width) <= fieldP.X + fieldS.Width - blockS.Width) &&
-                (goCurrentObject.Position().X + (deltaX * blockS.Width) >= fieldP.X + (blockS.Width / 2)))
+                (goCurrentObject.Position().X + (deltaX * blockS.Width) >= fieldP.X))
             {
                 foreach (MyGraphicObject go in groundObject)
                 {
