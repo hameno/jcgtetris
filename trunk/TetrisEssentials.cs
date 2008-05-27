@@ -96,7 +96,6 @@ namespace Tetris
             }
             else
             {
-                //currentObject.Clear();
                 for (int i1 = 0; i1 < 4; i1++)
                 {
                     currentObject[i1].Move(
