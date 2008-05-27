@@ -30,11 +30,13 @@ namespace Tetris
         public Pen Pen
         {
             get { return _pen; }
+            set { _pen = value; }
         }
 
         public Brush Brush
         {
             get { return _brush; }
+            set { _brush = value; }
         }
 
         public void SetBounds()
@@ -79,6 +81,10 @@ namespace Tetris
             mat.Translate(deltaX, deltaY);
             _path.Transform(mat);
         }
+        public RectangleF GetRectangle()
+        {
+            return Path.GetBounds();
+        }
     }
 
     public class MyRectangle : MyGraphicObject
@@ -89,6 +95,7 @@ namespace Tetris
             Path.AddRectangle(rect);
             SetBounds();
         }
+
     }
 
     public class MyCircle : MyGraphicObject
