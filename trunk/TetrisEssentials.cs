@@ -102,7 +102,6 @@ namespace Tetris
                         if (groundObject[i2].Path.IsVisible(new Point(groundObject[i2].Position().X, (int)i1)))
                         {
                             objectsToRemove.Add(i2);
-                            MessageBox.Show(Convert.ToString(i2));
                         }
                     }
 
