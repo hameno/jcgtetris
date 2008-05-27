@@ -20,7 +20,6 @@ namespace Tetris
         private TetronType alterStein;
         private Difficulty Schwierigkeitsgrad;
         List<MyGraphicObject> fieldObjects = new List<MyGraphicObject>();
-        private MyRectangle field;
         /// <summary>
         /// Level bei sound so vielen Steinen
         /// </summary>
@@ -44,7 +43,7 @@ namespace Tetris
             //Eigenschaften der Objekte definieren
             fieldS.Width = 400;
             fieldS.Height = 600;
-            fieldP.X = 50;
+            fieldP.X = 5;
             fieldP.Y = 50;
             blockS.Width = fieldS.Width / 10;
             blockS.Height = fieldS.Width / 10;
@@ -53,15 +52,21 @@ namespace Tetris
             pen.Color = Color.Black;
             pen.Width = 1;
             brush = Brushes.Navy;
+            // Spielüberschrift
+            fieldObjects.Add(new MyText(this, Pens.BlueViolet, Brushes.Transparent, "JCG Tetris", FontFamily.GenericSerif, FontStyle.Bold, 20, new Point(5, 5)));
             // Spielfeld
             fieldObjects.Add(new MyRectangle(this, Pens.Black, Brushes.Transparent, new Rectangle(fieldP, fieldS)));
+            // Spielinformationen
+            fieldObjects.Add(new MyRectangle(this, Pens.Black, Brushes.Transparent, new Rectangle(new Point(fieldP.X+fieldS.Width+20, fieldP.Y), new Size(150, fieldS.Height))));
+
+            
         }
         public Main()
         {
             InitializeComponent();
 
             //Eigenschaften der Oberfläche definieren
-            this.ClientSize = new Size(500, 800);
+            this.ClientSize = new Size(5+400+20+150+5, 800);
 
             //Damit geht das Neuzeichnen viel flüssiger
             this.DoubleBuffered = true;
@@ -145,11 +150,12 @@ namespace Tetris
             }
             else
             {
-                Font f = new Font(FontFamily.GenericSansSerif, 20);
+                
                 e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
                 e.Graphics.Clear(Color.White);
-                e.Graphics.DrawString("Speed: " + tCount.Interval.ToString(), f, Brushes.Black,1, 1);
-                e.Graphics.DrawString("Level: " + iLevel.ToString(), f, Brushes.Black, 1, 21);
+                Font f = new Font(FontFamily.GenericSansSerif, 20);
+                e.Graphics.DrawString("Speed: " + tCount.Interval.ToString(), f, Brushes.Black, new Point(fieldP.X + fieldS.Width + 20, fieldP.Y + 5));
+                e.Graphics.DrawString("Level: " + iLevel.ToString(), f, Brushes.Black, new Point(fieldP.X + fieldS.Width + 20, fieldP.Y + 5+ 20));
                 foreach (MyGraphicObject go in currentObject)
                 {
                     go.Draw(e.Graphics);
