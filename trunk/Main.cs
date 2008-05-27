@@ -44,6 +44,8 @@ namespace Tetris
             //Eigenschaften der Objekte definieren
             fieldS.Width = 400;
             fieldS.Height = 600;
+            fieldP.X = 50;
+            fieldP.Y = 50;
             blockS.Width = fieldS.Width / 10;
             blockS.Height = fieldS.Width / 10;
             startP.X = (fieldS.Width / 2) - (blockS.Width / 2);
