@@ -84,24 +84,29 @@ namespace Tetris
             MoveObject(0,1);
             
         }
+        /// <summary>
+        /// Gibt einen zufälligen Steintyp zurück, Wiederholungen sind ausgeschlossen
+        /// </summary>
+        /// <returns>Tetrontype</returns>
         private TetronType GenerateRandomTetronType()
         {
-            
+            // neuer steintyp
             TetronType neuStein;
             // neues Random-Objekt
             Random rnd = new Random();
             // Wähle ein Element zwischen 1 und maximaler Anzahl
             int irnd = rnd.Next(1, Enum.GetValues(typeof(TetronType)).Length);
-            if ((TetronType)irnd == alterStein)
+            if ((TetronType)irnd == alterStein) // wenn neuer = alter, neu generieren
             {
                 neuStein = GenerateRandomTetronType();
             }
-            else
+            else // speichere neuen
             {
                 neuStein = (TetronType)irnd;
             }
-            // Verändere den Typ des block
+            // Schreibe neuen in alten
             alterStein = neuStein;
+            // gebe neuen steintyp zurück
             return neuStein;
         }
         private void IncreaseSpeed()
@@ -120,8 +125,7 @@ namespace Tetris
             }
             else
             {
-                Font f= new Font(FontFamily.GenericSansSerif, 20);
-                
+                Font f = new Font(FontFamily.GenericSansSerif, 20);
                 e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
                 e.Graphics.Clear(Color.White);
                 e.Graphics.DrawString("Speed: " + tCount.Interval.ToString(), f, Brushes.Black,1, 1);
