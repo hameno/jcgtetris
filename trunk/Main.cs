@@ -16,6 +16,15 @@ namespace Tetris
         private int iSpeedFactor;
         private int iReihen;
         private int iLevel;
+
+        public int Level
+        {
+            get { return iLevel; }
+            set { 
+                iLevel = value;
+                fieldObjects[2].ApplyChanges();
+            }
+        }
         private int iReihenZumLevelup;
         private bool GameOver;
         private TetronType alterStein;
@@ -77,11 +86,11 @@ namespace Tetris
             //Startwerte für das Tetris-Game werden gesetzt
             InitGame();
             // Schwierigkeitsgrad auf Mittel setzen
-            Schwierigkeitsgrad = Difficulty.Mittel;
+            Schwierigkeitsgrad = Difficulty.Einfach;
             tCount = new Timer();
             tCount.Tick += new EventHandler(tCount_Tick);
             tCount.Interval = 500;
-            iSpeedFactor = 5;
+            iSpeedFactor = 10;
             iReihenZumLevelup = 5;
             alterStein = TetronType.I;
             iLevel = 1;
@@ -105,7 +114,6 @@ namespace Tetris
             {
                 iLevel++;
                 IncreaseSpeed();
-                fieldObjects[2].ApplyChanges();
             }
         }
         void tCount_Tick(object sender, EventArgs e)
@@ -140,9 +148,22 @@ namespace Tetris
         }
         private void IncreaseSpeed()
         {
-            if ((tCount.Interval - (iSpeedFactor*(int)Schwierigkeitsgrad) * iReihen) > 0)
+            if ((tCount.Interval - (iSpeedFactor * (int)Schwierigkeitsgrad) * 10) > 0)
             {
-                tCount.Interval -= (iSpeedFactor*(int)Schwierigkeitsgrad) * iReihen;
+                tCount.Interval -= (iSpeedFactor * (int)Schwierigkeitsgrad) * 10;
+                fieldObjects[2].ApplyChanges();
+            }
+            else if(tCount.Interval - 10 > 0)
+            {
+                tCount.Interval -= 10;
+            }
+            else if (tCount.Interval - 5 > 0)
+            {
+                tCount.Interval -= 5;
+            }
+            else if(tCount.Interval - 1 > 0)
+            {
+                tCount.Interval -= 1;
             }
         }
         public int Reihen
