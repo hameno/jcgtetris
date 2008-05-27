@@ -15,6 +15,9 @@ namespace Tetris
         private bool bShowMenu;
         private int iSpeedFactor;
         private int iReihen;
+        private int iLevel;
+        private int iReihenZumLevelup;
+        private Difficulty Schwierigkeitsgrad;
         /// <summary>
         /// Level bei sound so vielen Steinen
         /// </summary>
@@ -33,7 +36,7 @@ namespace Tetris
             e.Graphics.FillRectangle(Brushes.LightBlue, but1);
             e.Graphics.DrawRectangle(Pens.Red, but1);
         }
-        Difficulty dif;
+        
         public Main()
         {
             InitializeComponent();
@@ -43,14 +46,17 @@ namespace Tetris
 
             //Damit geht das Neuzeichnen viel flüssiger
             this.DoubleBuffered = true;
-
+            
             //Startwerte für das Tetris-Game werden gesetzt
             InitGame();
-            dif = Difficulty.Mittel;
+            // Schwierigkeitsgrad auf Mittel setzen
+            Schwierigkeitsgrad = Difficulty.Mittel;
             tCount = new Timer();
             tCount.Tick += new EventHandler(tCount_Tick);
             tCount.Interval = 500;
             iSpeedFactor = 5;
+            iReihenZumLevelup = 5;
+            iLevel = 1;
             iReihen = 0;
             bShowMenu = false;
             StartGame();
@@ -63,7 +69,13 @@ namespace Tetris
             AddObject();
             tCount.Start();
         }
-
+        private void CheckForLevelUp()
+        {
+            if ((iReihen % iReihenZumLevelup) == 0)
+            {
+                iLevel++;
+            }
+        }
         void tCount_Tick(object sender, EventArgs e)
         {
             MoveObject(0,1);
@@ -72,9 +84,9 @@ namespace Tetris
 
         private void IncreaseSpeed()
         {
-            if ((tCount.Interval - (iSpeedFactor*(int)dif) * iReihen) > 0)
+            if ((tCount.Interval - (iSpeedFactor*(int)Schwierigkeitsgrad) * iReihen) > 0)
             {
-                tCount.Interval -= (iSpeedFactor*(int)dif) * iReihen;
+                tCount.Interval -= (iSpeedFactor*(int)Schwierigkeitsgrad) * iReihen;
             }
         }
 
