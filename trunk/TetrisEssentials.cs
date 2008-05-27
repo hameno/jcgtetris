@@ -34,8 +34,8 @@ namespace Tetris
             currentObject.Clear();
 
             //neues zufälliges Objekt generieren
-            startP.X = (fieldS.Width / 2) - (blockS.Width / 2);
-            startP.Y = blockS.Height;
+            startP.X = fieldP.X + (fieldS.Width / 2) - (blockS.Width / 2);
+            startP.Y = fieldP.Y + blockS.Height;
 
             // Verändere den Typ des blocks
             block.ChangeType(GenerateRandomTetronType());
@@ -132,8 +132,8 @@ namespace Tetris
         private bool BorderCollision(int deltaX, int deltaY, MyGraphicObject goCurrentObject)
         {
             bool borderCollision = false;
-            if ((goCurrentObject.Position().X + (deltaX * blockS.Width) <= fieldS.Width - blockS.Width) &&
-                (goCurrentObject.Position().X + (deltaX * blockS.Width) >= blockS.Width / 2))
+            if ((goCurrentObject.Position().X + (deltaX * blockS.Width) <= fieldP.X + fieldS.Width - blockS.Width) &&
+                (goCurrentObject.Position().X + (deltaX * blockS.Width) >= fieldP.X + (blockS.Width / 2)))
             {
                 foreach (MyGraphicObject go in groundObject)
                 {
@@ -155,7 +155,7 @@ namespace Tetris
         private bool GroundCollision(int deltaX, int deltaY, MyGraphicObject goCurrentObject)
         {
             bool groundCollision = false;
-            if (goCurrentObject.Position().Y + (deltaY * blockS.Height) <= fieldS.Height - blockS.Height)
+            if (goCurrentObject.Position().Y + (deltaY * blockS.Height) <= fieldP.Y + fieldS.Height - blockS.Height)
             {
                 foreach (MyGraphicObject go in groundObject)
                 {
