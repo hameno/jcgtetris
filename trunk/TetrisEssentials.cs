@@ -14,7 +14,7 @@ namespace Tetris
         Tetromino block = new Tetromino();
         List<MyGraphicObject> currentObject = new List<MyGraphicObject>();
         List<MyGraphicObject> groundObject = new List<MyGraphicObject>();
-        MyGraphicObject groundObject2;
+        MyGraphicObject groundObjects;
 
         Point fieldP = new Point();
         Size fieldS = new Size();
@@ -28,6 +28,18 @@ namespace Tetris
             foreach (MyGraphicObject go in currentObject)
             {
                 groundObject.Add(go);
+            }
+
+            if (groundObjects == null)
+            {
+                groundObjects = new MyGraphicObject(this, pen, Brushes.White);
+            }
+
+            groundObjects.Pen = block.Pen;
+            groundObjects.Brush = block.Brush;
+            foreach (MyGraphicObject go in currentObject)
+            {
+                groundObjects.Path.AddRectangle(go.GetRectangle());
             }
 
             //altes Objekt löschen
