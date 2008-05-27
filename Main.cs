@@ -58,7 +58,7 @@ namespace Tetris
             fieldP.X = 5;
             fieldP.Y = 50;
             // Blockgröße
-            blockS.Width = fieldS.Width / 20;
+            blockS.Width = fieldS.Width / 10;
             blockS.Height = blockS.Width;
             // Mittelpunkt eines blockes
             //startP.X = (fieldS.Width / 2) - (blockS.Width / 2);
@@ -193,6 +193,7 @@ namespace Tetris
             }
             else if (GameOver)
             {
+                fieldObjects[1].ApplyChanges();
                 tCount.Stop();
                 e.Graphics.Clear(Color.Red);
                 MyText text = new MyText(this, Pens.Black, Brushes.Black, "GAME OVER", FontFamily.GenericSerif, FontStyle.Bold, 40, new Point(fieldS.Width/3, fieldS.Height/5));
