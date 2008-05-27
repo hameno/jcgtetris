@@ -14,6 +14,7 @@ namespace Tetris
         Tetromino block = new Tetromino();
         List<MyGraphicObject> currentObject = new List<MyGraphicObject>();
         List<MyGraphicObject> groundObject = new List<MyGraphicObject>();
+        MyGraphicObject groundObject2;
 
         Point fieldP = new Point();
         Size fieldS = new Size();
@@ -71,11 +72,21 @@ namespace Tetris
         }
 
         private void CheckLines()
-        {/*
-            foreach (MyGraphicObject goCurrentObject in groundObject)
+        {
+            //groundObject2.Path.
+            
+            /*
+            for (int i1 = fieldS.Height - blockS.Height; i1 >= 0; i1 -= blockS.Height)
             {
 
-            }*/
+                bool noBlock = false;
+                do
+                {
+                    groundObject[
+                }
+                while (noBlock != true);
+            }
+             * */
         }
 
         private void RotateObject()
