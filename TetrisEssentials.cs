@@ -15,6 +15,7 @@ namespace Tetris
         List<MyGraphicObject> currentObject = new List<MyGraphicObject>();
         List<MyGraphicObject> groundObject = new List<MyGraphicObject>();
 
+        Size fieldS = new Size();
         Size blockS = new Size();
         Point startP = new Point();
         Pen pen = new Pen(Color.Black, 1);
@@ -23,9 +24,12 @@ namespace Tetris
         private void InitGame()
         {
             //Eigenschaften der Objekte definieren
-            blockS.Width = this.ClientSize.Width / 10;
-            blockS.Height = this.ClientSize.Width / 10;
-            startP.X = (this.ClientSize.Width / 2) - (blockS.Width / 2);
+
+            fieldS.Width = 400;
+            fieldS.Height = 600;
+            blockS.Width = fieldS.Width / 10;
+            blockS.Height = fieldS.Width / 10;
+            startP.X = (fieldS.Width / 2) - (blockS.Width / 2);
             startP.Y = blockS.Height;
             pen.Color = Color.Black;
             pen.Width = 1;
@@ -44,7 +48,7 @@ namespace Tetris
             currentObject.Clear();
 
             //neues zufälliges Objekt generieren
-            startP.X = (this.ClientSize.Width / 2) - (blockS.Width / 2);
+            startP.X = (fieldS.Width / 2) - (blockS.Width / 2);
             startP.Y = blockS.Height;
 
             // Verändere den Typ des blocks
@@ -142,7 +146,7 @@ namespace Tetris
         private bool BorderCollision(int deltaX, int deltaY, MyGraphicObject goCurrentObject)
         {
             bool borderCollision = false;
-            if ((goCurrentObject.Position().X + (deltaX * blockS.Width) <= this.ClientSize.Width - blockS.Width) &&
+            if ((goCurrentObject.Position().X + (deltaX * blockS.Width) <= fieldS.Width - blockS.Width) &&
                 (goCurrentObject.Position().X + (deltaX * blockS.Width) >= blockS.Width / 2))
             {
                 foreach (MyGraphicObject go in groundObject)
@@ -165,7 +169,7 @@ namespace Tetris
         private bool GroundCollision(int deltaX, int deltaY, MyGraphicObject goCurrentObject)
         {
             bool groundCollision = false;
-            if (goCurrentObject.Position().Y + (deltaY * blockS.Height) <= this.ClientSize.Height - blockS.Height)
+            if (goCurrentObject.Position().Y + (deltaY * blockS.Height) <= fieldS.Height - blockS.Height)
             {
                 foreach (MyGraphicObject go in groundObject)
                 {
