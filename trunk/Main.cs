@@ -66,7 +66,7 @@ namespace Tetris
             textObjects.Clear();
             // Schwierigkeitsgrad auf Mittel setzen
             Schwierigkeitsgrad = Difficulty.Einfach;
-            iSpeedFactor = 20;
+            iSpeedFactor = 10;
             iReihenZumLevelup = 3;
             tCount.Interval = 400;
             alterStein = TetronType.I;
