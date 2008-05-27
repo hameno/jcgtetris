@@ -19,6 +19,8 @@ namespace Tetris
         private int iReihenZumLevelup;
         private TetronType alterStein;
         private Difficulty Schwierigkeitsgrad;
+        List<MyGraphicObject> fieldObjects = new List<MyGraphicObject>();
+        private MyRectangle field;
         /// <summary>
         /// Level bei sound so vielen Steinen
         /// </summary>
@@ -37,13 +39,27 @@ namespace Tetris
             e.Graphics.FillRectangle(Brushes.LightBlue, but1);
             e.Graphics.DrawRectangle(Pens.Red, but1);
         }
-        
+        private void InitGame()
+        {
+            //Eigenschaften der Objekte definieren
+            fieldS.Width = 400;
+            fieldS.Height = 600;
+            blockS.Width = fieldS.Width / 10;
+            blockS.Height = fieldS.Width / 10;
+            startP.X = (fieldS.Width / 2) - (blockS.Width / 2);
+            startP.Y = blockS.Height;
+            pen.Color = Color.Black;
+            pen.Width = 1;
+            brush = Brushes.Navy;
+            // Spielfeld
+            fieldObjects.Add(new MyRectangle(this, Pens.Black, Brushes.Transparent, new Rectangle(fieldP, fieldS)));
+        }
         public Main()
         {
             InitializeComponent();
 
             //Eigenschaften der Oberfläche definieren
-            this.ClientSize = new Size(400, 600);
+            this.ClientSize = new Size(500, 800);
 
             //Damit geht das Neuzeichnen viel flüssiger
             this.DoubleBuffered = true;
@@ -62,6 +78,8 @@ namespace Tetris
             iReihen = 0;
             bShowMenu = false;
             StartGame();
+
+            
         }
         /// <summary>
         /// Startet das Spiel
@@ -135,6 +153,10 @@ namespace Tetris
                     go.Draw(e.Graphics);
                 }
                 foreach (MyGraphicObject go in groundObject)
+                {
+                    go.Draw(e.Graphics);
+                }
+                foreach (MyGraphicObject go in fieldObjects)
                 {
                     go.Draw(e.Graphics);
                 }
