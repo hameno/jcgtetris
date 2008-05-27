@@ -12,8 +12,8 @@ namespace Tetris
     public partial class Main : Form
     {
         Timer tCount;
-        private bool ShowMenu;
-
+        private bool bShowMenu;
+        private int iSpeedFactor;
         private void DrawMenu(PaintEventArgs e)
         {
             e.Graphics.Clear(Color.White);
@@ -40,11 +40,13 @@ namespace Tetris
             tCount = new Timer();
             tCount.Tick += new EventHandler(tCount_Tick);
             tCount.Interval = 500;
-
-            ShowMenu = false;
+            iSpeedFactor = 30;
+            bShowMenu = false;
             StartGame();
         }
-        
+        /// <summary>
+        /// Startet das Spiel
+        /// </summary>
         private void StartGame()
         {
             AddObject();
@@ -54,6 +56,15 @@ namespace Tetris
         void tCount_Tick(object sender, EventArgs e)
         {
             MoveObject(0,1);
+            
+        }
+
+        private void IncreaseSpeed()
+        {
+            if ((tCount.Interval - iSpeedFactor * groundObject.Count) > 200)
+            {
+                tCount.Interval -= iSpeedFactor * groundObject.Count;
+            }
         }
 
         private void Main_Paint(object sender, PaintEventArgs e)
@@ -64,7 +75,7 @@ namespace Tetris
             }
             else
             {
-                e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
+                e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
                 e.Graphics.Clear(Color.White);
                 foreach (MyGraphicObject go in currentObject)
                 {
@@ -76,7 +87,9 @@ namespace Tetris
                 }
             }
         }
-
+        /// <summary>
+        /// Gibt zurück, ob das Spiel aktiv ist
+        /// </summary>
         private bool IsRunning
         {
             get { return tCount.Enabled; }
@@ -86,22 +99,22 @@ namespace Tetris
         {
             switch (e.KeyData)
             {
-                case Keys.Left:
+                case Keys.Left: // Nach links
                 case Keys.A:
                     if(IsRunning)
                     MoveObject(-1, 0);
                     break;
-                case Keys.Right:
+                case Keys.Right: // Nach rechts
                 case Keys.D:
                     if (IsRunning)
                     MoveObject(1, 0);
                     break;
-                case Keys.Up:
+                case Keys.Up: // Rotieren
                 case Keys.W:
                     if (IsRunning)
                     RotateObject();
                     break;
-                case Keys.Down:
+                case Keys.Down: // Nach unten
                 case Keys.S:
                     if (IsRunning)
                     tCount_Tick(null, null);
@@ -114,7 +127,7 @@ namespace Tetris
 
         private bool IsAtMenu
         {
-            get { return ShowMenu; }
+            get { return bShowMenu; }
         }
     }
 }
