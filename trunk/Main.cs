@@ -53,10 +53,15 @@ namespace Tetris
         }
         private void InitGame()
         {
+            currentObject.Clear();
+            groundObject.Clear();
+            fieldObjects.Clear();
+            textObjects.Clear();
             // Schwierigkeitsgrad auf Mittel setzen
             Schwierigkeitsgrad = Difficulty.Einfach;
             iSpeedFactor = 10;
             iReihenZumLevelup = 5;
+            tCount.Interval = 500;
             alterStein = TetronType.I;
             iLevel = 1;
             iReihen = 0;
@@ -93,7 +98,7 @@ namespace Tetris
             InitializeComponent();
             tCount = new Timer();
             tCount.Tick += new EventHandler(tCount_Tick);
-            tCount.Interval = 500;
+            
             //Eigenschaften der Oberfläche definieren
             this.ClientSize = new Size(5+400+5+150+5, 680);
 
@@ -107,6 +112,13 @@ namespace Tetris
             StartGame();
 
             
+        }
+
+        private void ResetGame()
+        {
+            this.Invalidate();
+            InitGame();
+            StartGame();
         }
         /// <summary>
         /// Startet das Spiel
@@ -249,6 +261,9 @@ namespace Tetris
         {
             switch (e.KeyData)
             {
+                case Keys.N: // Neues SPiel
+                    ResetGame();
+                    break;
                 case Keys.Left: // Nach links
                 case Keys.A:
                     if(IsRunning)
@@ -278,6 +293,7 @@ namespace Tetris
                     break;
             }
         }
+
 
         private bool IsAtMenu
         {
