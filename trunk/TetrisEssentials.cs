@@ -47,7 +47,7 @@ namespace Tetris
             startP.Y = fieldP.Y + blockS.Height;
 
             // Verändere den Typ des blocks
-            block.ChangeType(GenerateRandomTetronType());
+            block.ChangeType(nextStein);
 
             //Neuen Block erstellen
             for (int i1 = 0; i1 < 4; i1++)
@@ -117,9 +117,25 @@ namespace Tetris
                             }
                         }
                     }
+                    
+                    //Objekte unter der Höhe "i1" raussuchen und um 1 nach unten verschieben
+                    for (int i2 = 0; i2 < groundObject.Count; i2++)
+                    {
+                        if (groundObject[i2].Position().Y <= i1 - blockS.Height)
+                        {
+                            groundObject[i2].Move(0, blockS.Height);
+                        }
+                    }
 
-                    //Objekte ab der Höhe "i1" verschieben
+                    //Objekte mit den Kollisionobjekten anpassen
+                    groundObjects.Reset();
+                    foreach (MyGraphicObject go in groundObject)
+                    {
+                        groundObjects.AddRectangle(Rectangle.Round(go.GetRectangle()));
+                    }
 
+                    //Globale Variable ändern
+                    Reihen += 1;
                 }
             }
             this.Invalidate();
