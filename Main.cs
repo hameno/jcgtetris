@@ -178,6 +178,9 @@ namespace Tetris
                 fieldObjects[2].ApplyChanges();
             }
         }
+        Point SpeedStartPunkt;
+        Point LevelStartPunkt;
+        Point ReihenStartPunkt;
         private void Main_Paint(object sender, PaintEventArgs e)
         {
             // Antialising
@@ -190,7 +193,10 @@ namespace Tetris
             }
             else if (GameOver)
             {
-
+                tCount.Stop();
+                e.Graphics.Clear(Color.Red);
+                MyText text = new MyText(this, Pens.Black, Brushes.Black, "GAME OVER", FontFamily.GenericSerif, FontStyle.Bold, 40, new Point(fieldS.Width/3, fieldS.Height/5));
+                text.Draw(e.Graphics);
             }
             else
             {
