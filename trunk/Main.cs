@@ -89,7 +89,7 @@ namespace Tetris
             fieldObjects.Add(new MyRectangle(this, Pens.Black, Brushes.Transparent, new Rectangle(fieldP, fieldS)));
             // Nächster Block
             fieldObjects.Add(new MyRectangle(this, Pens.Black, Brushes.Transparent, new Rectangle(new Point(fieldP.X+fieldS.Width+5, fieldP.Y), new Size(150, 150))));
-            GenerateNextBlockType();
+            
             // Spielinformationen
             Point SpielInfoPunkt = new Point(fieldP.X + fieldS.Width + 5, fieldP.Y + 155);
             fieldObjects.Add(new MyRectangle(this, Pens.Black, Brushes.Transparent, new Rectangle(SpielInfoPunkt, new Size(150, fieldS.Height - 155))));
@@ -125,13 +125,13 @@ namespace Tetris
             for (int i1 = 0; i1 < 4; i1++)
             {
                 previewObject.Add(new MyRectangle(this, previewBlock.Pen, previewBlock.Brush, new Rectangle(
-                    (int)fieldObjects[1].GetRectangle().X + 1 + previewBlock.Points[previewBlock.ObjectRotation, i1, 0] * 10,
-                    (int)fieldObjects[1].GetRectangle().Y + 1 + previewBlock.Points[previewBlock.ObjectRotation, i1, 1] * 10,
-                    10, 10)));
+                    (int)fieldObjects[2].GetRectangle().X + (int)fieldObjects[2].GetRectangle().Width / 2  + previewBlock.Points[previewBlock.ObjectRotation, i1, 0] * 30,
+                    (int)fieldObjects[2].GetRectangle().Y + (int)fieldObjects[2].GetRectangle().Height / 2 + previewBlock.Points[previewBlock.ObjectRotation, i1, 1] * 30,
+                    30, 30)));
                 //Zeichenfläche aktualisieren
                 previewObject[i1].ApplyChanges();
             }
-            fieldObjects[1].ApplyChanges();
+            fieldObjects[2].ApplyChanges();
         }
         private void ResetGame()
         {
@@ -144,6 +144,7 @@ namespace Tetris
         /// </summary>
         private void StartGame()
         {
+            GenerateNextBlockType();
             AddObject();
             tCount.Start();
         }
@@ -216,9 +217,6 @@ namespace Tetris
                 textObjects[2].ApplyChanges();
             }
         }
-        Point SpeedStartPunkt;
-        Point LevelStartPunkt;
-        Point ReihenStartPunkt;
         private void Main_Paint(object sender, PaintEventArgs e)
         {
             // Antialising
@@ -265,6 +263,10 @@ namespace Tetris
                 foreach (MyGraphicObject to in textObjects)
                 {
                     to.Draw(e.Graphics);
+                }
+                foreach (MyGraphicObject go in previewObject)
+                {
+                    go.Draw(e.Graphics);
                 }
             }
 
