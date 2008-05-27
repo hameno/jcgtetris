@@ -134,10 +134,6 @@ namespace Tetris
                 {
                     go.Draw(e.Graphics);
                 }
-                foreach (MyGraphicObject go in groundObject)
-                {
-                    go.Draw(e.Graphics);
-                }
             }
         }
         /// <summary>
