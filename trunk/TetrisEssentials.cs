@@ -245,7 +245,8 @@ namespace Tetris
         private bool GroundCollision(int deltaX, int deltaY, MyGraphicObject goCurrentObject)
         {
             bool groundCollision = false;
-            if (goCurrentObject.Position().Y + (deltaY * blockS.Height) <= fieldP.Y + fieldS.Height - blockS.Height)
+            if ((goCurrentObject.Position().Y + (deltaY * blockS.Height) <= fieldP.Y + fieldS.Height - blockS.Height) &&
+                (goCurrentObject.Position().Y + (deltaY * blockS.Height) >= fieldP.Y))
             {
                 if (groundObjects.IsVisible(
                     goCurrentObject.Position().X,
