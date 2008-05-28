@@ -66,7 +66,7 @@ namespace Tetris
             textObjects.Clear();
             // Schwierigkeitsgrad auf Mittel setzen
             Schwierigkeitsgrad = Difficulty.Einfach;
-            iSpeedFactor = 10;
+            iSpeedFactor = 5;
             iReihenZumLevelup = 3;
             tCount.Interval = 400;
             alterStein = TetronType.I;
@@ -107,7 +107,7 @@ namespace Tetris
             tCount.Tick += new EventHandler(tCount_Tick);
             
             //Eigenschaften der Oberfläche definieren
-            this.ClientSize = new Size(5+400+5+150+5, 680);
+            this.ClientSize = new Size(5 + 400 + 5 + 150 + 5, 50 + 600 + 5);
 
             //Damit geht das Neuzeichnen viel flüssiger
             this.DoubleBuffered = true;
