@@ -24,24 +24,39 @@ namespace Tetris
     }
     public partial class Main : Form
     {
-        Timer tCount;
-        Timer tMovements;
+        
+        private Timer tCount;
+        private Timer tMovements;
         private bool bShowMenu;
         private int iSpeedFactor;
         private int iReihen;
         private int iLevel;
-
-
-        Bewegung bewegungen = new Bewegung();
+        private GameModus gamemode;
+        private Bewegung bewegungen = new Bewegung();
         private int iReihenZumLevelup;
-        private bool GameOver;
+        public bool GameOver
+        {
+            get
+            {
+                if (gamemode == GameModus.GameOver)
+                    return true;
+                else
+                    return false;
+            }
+            set 
+            {
+                if (value == true)
+                    gamemode = GameModus.GameOver;
+            }
+        }
         private TetronType alterStein;
         private TetronType nextStein;
         private Difficulty Schwierigkeitsgrad;
-        List<MyGraphicObject> fieldObjects = new List<MyGraphicObject>();
-        List<MyGraphicObject> previewObjects = new List<MyGraphicObject>();
-        Tetromino previewBlock = new Tetromino();
-        List<MyText> textObjects = new List<MyText>();
+        private List<MyGraphicObject> fieldObjects = new List<MyGraphicObject>();
+        private List<MyGraphicObject> previewObjects = new List<MyGraphicObject>();
+        private List<MyGraphicObject> textTitleObjects = new List<MyGraphicObject>();
+        private Tetromino previewBlock = new Tetromino();
+        private List<MyText> textObjects = new List<MyText>();
         public int Level
         {
             get
@@ -64,6 +79,13 @@ namespace Tetris
             Mittel = 2,
             Schwer = 5
         }
+        private enum GameModus : int
+        {
+            Running = 1,
+            Paused = 2,
+            Stopped = 3,
+            GameOver = 4
+        }
         private void DrawMenu(PaintEventArgs e)
         {
             e.Graphics.Clear(Color.White);
@@ -83,8 +105,9 @@ namespace Tetris
             textObjects.Clear();
             // Schwierigkeitsgrad auf Mittel setzen
             Schwierigkeitsgrad = Difficulty.Einfach;
+            gamemode = GameModus.Running;
             iSpeedFactor = 5;
-            iReihenZumLevelup = 3;
+            iReihenZumLevelup = 5;
             tCount.Interval = 400;
             tMovements.Interval = 200;
             alterStein = TetronType.I;
@@ -98,12 +121,8 @@ namespace Tetris
             fieldP.X = 5;
             fieldP.Y = 50;
             // Blockgröße
-            blockS.Width = fieldS.Width / 10;
+            blockS.Width = fieldS.Width / 15;
             blockS.Height = blockS.Width;
-            // Mittelpunkt eines blockes
-            //startP.X = (fieldS.Width / 2) - (blockS.Width / 2);
-            //startP.Y = blockS.Height;
-            GameOver = false;
             // Spielüberschrift
             fieldObjects.Add(new MyText(this, Pens.Transparent, Brushes.SteelBlue, "JCG Tetris", FontFamily.GenericSerif, FontStyle.Bold, 30, new Point(5, 5)));
             // Spielfeld
@@ -116,7 +135,7 @@ namespace Tetris
             // Textobjekte
             textObjects.Add(new MyText(this, Pens.Black, Brushes.Black, "Speed: " + tCount.Interval.ToString(), FontFamily.GenericSansSerif, FontStyle.Regular, 15, new Point(SpielInfoPunkt.X + 1, SpielInfoPunkt.Y + 1)));
             textObjects.Add(new MyText(this, Pens.Black, Brushes.Black, "Level: " + iLevel.ToString(), FontFamily.GenericSansSerif, FontStyle.Regular, 15, new Point(SpielInfoPunkt.X + 1, SpielInfoPunkt.Y + 5 + 20)));
-            textObjects.Add(new MyText(this, Pens.Black, Brushes.Black, "Reihen: " + iReihen.ToString(), FontFamily.GenericSansSerif, FontStyle.Regular, 15, new Point(SpielInfoPunkt.X + 1, SpielInfoPunkt.Y + 25 + 20)));
+            textObjects.Add(new MyText(this, Pens.Black, Brushes.Black, "Reihen: " + iReihen.ToString(), FontFamily.GenericSansSerif, FontStyle.Regular, 15, new Point(SpielInfoPunkt.X + 1, SpielInfoPunkt.Y + 5 + 20 + 20)));
             textObjects.Add(new MyText(this, Pens.Black, Brushes.Black, "Nächster Block:", FontFamily.GenericSansSerif, FontStyle.Regular, 15, new Point(fieldObjects[2].Position().X + 1, fieldObjects[2].Position().Y + 1)));
         }
         public Main()
@@ -145,13 +164,13 @@ namespace Tetris
             {
                 MoveObject(1, 0);
                 if(tCount.Enabled)
-                tCount_Tick(null, null);
+                tCount_Tick(tCount, null);
             }
             else if (bewegungen.Down && !bewegungen.Right && bewegungen.Left)
             {
                 MoveObject(-1, 0);
                 if (tCount.Enabled)
-                tCount_Tick(null, null);
+                tCount_Tick(tCount, null);
             }
             else if (!bewegungen.Down && !bewegungen.Right && bewegungen.Left)
             {
@@ -164,7 +183,11 @@ namespace Tetris
             else if (bewegungen.Down && !bewegungen.Right && !bewegungen.Left)
             {
                 if (tCount.Enabled)
-                tCount_Tick(null, null);
+                tCount_Tick(tCount, null);
+            }
+            if (!bewegungen.Down && !bewegungen.Right && !bewegungen.Left)
+            {
+                ((Timer)sender).Stop();
             }
         }
         private void GenerateNextBlockType()
@@ -320,56 +343,97 @@ namespace Tetris
         {
             // Antialising
             e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
-            // Spielfeld leeren
+            // Spielfeld/Area leeren
             e.Graphics.Clear(Color.White);
-            if (IsAtMenu)
+            switch (gamemode)
             {
-                DrawMenu(e);
+                case GameModus.Paused:
+                    fieldObjects[1].Brush = Brushes.Red;
+                    fieldObjects[2].Brush = Brushes.Red;
+                    fieldObjects[3].Brush = Brushes.Red;
+                    fieldObjects[1].ApplyChanges();
+                    fieldObjects[2].ApplyChanges();
+                    fieldObjects[3].ApplyChanges();
+                    ZeichneFelder(e);
+                    String messtext = "PAUSE";
+                    MyText pausedtext = new MyText(this, Pens.Black, Brushes.Black, messtext, FontFamily.GenericSerif, FontStyle.Bold, 40, new Point(fieldS.Width / 3, (fieldS.Height / 2)));
+                    pausedtext.Draw(e.Graphics);
+                    break;
+                case GameModus.Running:
+                    if (fieldObjects[1].Brush != Brushes.Transparent)
+                        fieldObjects[1].Brush = Brushes.Transparent;
+                    if (fieldObjects[2].Brush != Brushes.Transparent)
+                        fieldObjects[2].Brush = Brushes.Transparent;
+                    if (fieldObjects[3].Brush != Brushes.Transparent)
+                        fieldObjects[3].Brush = Brushes.Transparent;
+                    if(!IsRunning)
+                        tCount.Start();
+                    if(!tMovements.Enabled)
+                        tMovements.Start();
+                    ZeichneObjekte(e);
+                    ZeichneBodenObjekte(e);
+                    ZeichneFelder(e);
+                    ZeichneTexte(e);
+                    ZeichneVorschau(e);
+                    break;
+                case GameModus.Stopped:
+                    DrawMenu(e);
+                    break;
+                case GameModus.GameOver:
+                    tCount.Stop();
+                    tMovements.Stop();
+                    fieldObjects[1].Brush = Brushes.Red;
+                    ZeichneFelder(e);
+                    ZeichneTexte(e);
+                    String gamemesstext = "GAME OVER";
+                    MyText gameovertext = new MyText(this, Pens.Black, Brushes.Black, gamemesstext, FontFamily.GenericSerif, FontStyle.Bold, 40, new Point(fieldS.Width / 6, (fieldS.Height / 2)));
+                    gameovertext.Draw(e.Graphics);
+                    break;
             }
-            else if (GameOver)
+        }
+        private void ZeichneBodenObjekte(PaintEventArgs e)
+        {
+            //Zeichnen der Bodenobjekte
+            foreach (MyGraphicObject go in groundObject)
             {
-                
-                //e.Graphics.Clear(Color.Red);
-                fieldObjects[1].Brush = Brushes.Red;
-                fieldObjects[1].ApplyChanges();
-                fieldObjects[1].Draw(e.Graphics);
-                tCount.Stop();
-                tMovements.Stop();
-                MyText text = new MyText(this, Pens.Black, Brushes.Black, "GAME OVER", FontFamily.GenericSerif, FontStyle.Bold, 40, new Point(fieldS.Width/6, fieldS.Height/6));
-                text.Draw(e.Graphics);
-                foreach (MyGraphicObject to in textObjects)
-                {
-                    to.Draw(e.Graphics);
-                }
+                go.Draw(e.Graphics);
             }
-            else
-            {
-                // Spielinformationen
-                
-                // Objekte zeichnen
-                foreach (MyGraphicObject go in currentObject)
-                {
-                    go.Draw(e.Graphics);
-                }
-                //Zeichnen der Bodenobjekte
-                foreach (MyGraphicObject go in groundObject)
-                {
-                    go.Draw(e.Graphics);
-                }
-                foreach (MyGraphicObject go in fieldObjects)
-                {
-                    go.Draw(e.Graphics);
-                }
-                foreach (MyGraphicObject to in textObjects)
-                {
-                    to.Draw(e.Graphics);
-                }
-                foreach (MyGraphicObject go in previewObjects)
-                {
-                    go.Draw(e.Graphics);
-                }
-            }
+        }
 
+        private void ZeichneObjekte(PaintEventArgs e)
+        {
+            // Objekte zeichnen
+            foreach (MyGraphicObject go in currentObject)
+            {
+                go.Draw(e.Graphics);
+            }
+        }
+
+        private void ZeichneVorschau(PaintEventArgs e)
+        {
+            // Preview
+            foreach (MyGraphicObject go in previewObjects)
+            {
+                go.Draw(e.Graphics);
+            }
+        }
+
+        private void ZeichneTexte(PaintEventArgs e)
+        {
+            // Texte
+            foreach (MyGraphicObject to in textObjects)
+            {
+                to.Draw(e.Graphics);
+            }
+        }
+
+        private void ZeichneFelder(PaintEventArgs e)
+        {
+            // Felder
+            foreach (MyGraphicObject go in fieldObjects)
+            {
+                go.Draw(e.Graphics);
+            }
         }
         /// <summary>
         /// Gibt zurück, ob das Spiel aktiv ist
@@ -389,12 +453,20 @@ namespace Tetris
                 case Keys.Left: // Nach links
                 case Keys.A:
                     bewegungen.Left = true;
-                    tMovements_Tick(null, null);
+                    tMovements_Tick(tMovements, null);
+                    if (!tMovements.Enabled)
+                    {
+                        tMovements.Start();
+                    }
                     break;
                 case Keys.Right: // Nach rechts
                 case Keys.D:
                     bewegungen.Right = true;
-                    tMovements_Tick(null, null);
+                    tMovements_Tick(tMovements, null);
+                    if (!tMovements.Enabled)
+                    {
+                        tMovements.Start();
+                    }
                     break;
                 case Keys.Up: // Rotieren
                 case Keys.W:
@@ -403,8 +475,12 @@ namespace Tetris
                     break;
                 case Keys.Down: // Nach unten
                 case Keys.S:
-                    if(tCount.Enabled)
-                    tCount_Tick(null, null);
+                    bewegungen.Down = true;
+                    tMovements_Tick(tMovements, null);
+                    if (!tMovements.Enabled)
+                    {
+                        tMovements.Start();
+                    }
                     break;
                 case Keys.Escape:
                     this.Close();
@@ -412,6 +488,22 @@ namespace Tetris
                 case Keys.Z:
                     Reihen++;
                     CheckForLevelUp();
+                    break;
+                case Keys.P:
+                    if (gamemode == GameModus.Paused)
+                    {
+                        gamemode = GameModus.Running;
+                        tCount.Start();
+                        tMovements.Start();
+                    }
+                    else if(gamemode == GameModus.Running)
+                    {
+                        gamemode = GameModus.Paused;
+                        tCount.Stop();
+                        tMovements.Stop();
+                    }
+                    fieldObjects[1].ApplyChanges();
+                    fieldObjects[3].ApplyChanges();
                     break;
             }
         }
