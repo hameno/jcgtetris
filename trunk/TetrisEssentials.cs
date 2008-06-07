@@ -61,7 +61,7 @@ namespace Tetris
                 currentObject[i1].ApplyChanges();
             }
 
-            //GameOver-Bedingung überprüfen
+            //bGameOver-Bedingung überprüfen
             bool groundCollision = false;
             foreach (MyGraphicObject goCurrentObject in currentObject)
             {
@@ -73,7 +73,7 @@ namespace Tetris
             }
             if (groundCollision == true)
             {
-                //GameOver
+                //bGameOver
                 GameOver = true;
             }
         }
